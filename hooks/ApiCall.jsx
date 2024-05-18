@@ -1,4 +1,5 @@
 import axios from "@/utils/axios";
+import { getCookie } from "cookies-next";
 import { useState, useEffect } from "react";
 
 const useApiCall = () => {
@@ -9,7 +10,6 @@ const useApiCall = () => {
       const { data } = await axios.get(`${process.env.base_url}/${url}`, {
         headers: {
           "Content-Type": "application/json",
-          token: process.env.TOKEN,
         },
         withCredentials: true,
       });
@@ -18,6 +18,7 @@ const useApiCall = () => {
       console.error(error);
     }
   };
+
   const newHeader = async (header) => {
     try {
       const { data } = await axios.post(
@@ -28,7 +29,6 @@ const useApiCall = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            token: process.env.TOKEN,
           },
           withCredentials: true,
         }
@@ -51,7 +51,6 @@ const useApiCall = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            token: process.env.TOKEN,
           },
           withCredentials: true,
         }
@@ -59,6 +58,24 @@ const useApiCall = () => {
 
       setItems((prev) => [...items, data]);
       console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const remove = async (url, id) => {
+    try {
+      const { data } = await axios.delete(
+        `${process.env.base_url}/${url}/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const removed = items.filter((item) => item._id !== id);
+      setItems((prev) => [...removed]);
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +103,7 @@ const useApiCall = () => {
   //     }
   //   };
 
-  return { setItems, items, fetchData, newHeader, newLink };
+  return { setItems, items, fetchData, newHeader, newLink, remove };
 };
 
 export default useApiCall;

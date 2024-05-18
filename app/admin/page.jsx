@@ -17,9 +17,7 @@ import { useEffect, useState } from "react";
 import { motion, Reorder } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { IoIosAdd } from "react-icons/io";
-import axios from "axios";
 import useApiCall from "@/hooks/ApiCall";
-// import { LinksPage } from "@/pages/index";
 
 export default function DashboardPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,37 +32,21 @@ export default function DashboardPage() {
       },
     },
   };
-  // const [items, setItems] = useState([]);
+
   const [url, setUrl] = useState("");
   const [header, setHeader] = useState();
 
-  const remove = async (id) => {
-    try {
-      const { data } = await axios.delete(
-        `${process.env.base_url}/headers/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            token: process.env.TOKEN,
-          },
-          withCredentials: true,
-        }
-      );
-      const removed = items.filter((item) => item._id !== id);
-      setItems((prev) => [...removed]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const { items, setItems, fetchData, newHeader, newLink } = useApiCall();
+  const { items, setItems, fetchData, newHeader, newLink, remove } =
+    useApiCall();
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const linksData = await fetchData("links");
         const headersData = await fetchData("headers");
-        setItems([...linksData, ...headersData]);
+        if (linksData && headersData) {
+          setItems([...linksData, ...headersData]);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -72,6 +54,7 @@ export default function DashboardPage() {
 
     fetchItems();
   }, []);
+
   return (
     <>
       <div className=" flex-col md:flex">

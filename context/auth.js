@@ -9,6 +9,10 @@ import { toast } from "react-toastify";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  let token = null;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("user");
+  }
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -21,12 +25,12 @@ export const AuthProvider = ({ children }) => {
   //   getUser();
   // }, []);
 
-  const registerUser = async ({ username, phone, password }) => {
+  const registerUser = async ({ email, phone, password }) => {
     try {
       const { data } = await axios.post(
         `${process.env.base_url}/sing-up`,
         {
-          name,
+          email,
           phone,
           password,
         },
@@ -53,12 +57,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const loginUser = async ({ username, password }) => {
+  const loginUser = async ({ email, password }) => {
     try {
       const { data } = await axios.post(
         `${process.env.base_url}/login`,
         {
-          username,
+          email,
           password,
         },
         {
@@ -73,8 +77,8 @@ export const AuthProvider = ({ children }) => {
       if (data) {
         setUser(true);
         getUser();
-        setCookie("user", data?.token);
-        localStorage.setItem("userID", data?.userId);
+        setCookie("jwtt", data.token);
+        console.log(data);
         router.push("/");
         toast.success('"Logged in Successfully"');
       }
@@ -86,25 +90,20 @@ export const AuthProvider = ({ children }) => {
 
   const logoutUser = async () => {
     try {
-      const { data } = await axios.get(`${process.env.base_url}/logout`, {
-        headers: {
-          "Content-Type": "application/json",
-          token: process.env.TOKEN,
-        },
-        withCredentials: true,
-      });
-
-      if (data) {
-        deleteCookie("user");
-        setUser(false);
-        localStorage.removeItem("userID");
-        localStorage.removeItem("userData");
-
-        router.push("/");
-        toast.success('"Logged Out Successfully"');
-      }
+      const { data } = await axios.post(
+        `${process.env.base_url}/logout`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      deleteCookie("jwtt");
+      console.log(data);
     } catch (error) {
-      setErorr(error?.response?.data?.message);
+      console.log(error);
     }
   };
 
@@ -117,7 +116,7 @@ export const AuthProvider = ({ children }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            token: process.env.TOKEN,
+            Authorization: `${token}`,
           },
           withCredentials: true,
         }
@@ -139,7 +138,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await axios.get(`${process.env.base_url}/user`, {
         headers: {
           "Content-Type": "application/json",
-          token: process.env.TOKEN,
+          // Authorization: `${token}`,
         },
         withCredentials: true,
       });

@@ -4,17 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { TbPencilPlus } from "react-icons/tb";
 
-export default function Inputs({
-  name,
-  placeholder,
-  // id,
-  // editHeader,
-  // editLink,
-  // type,
-  // ref,
-  blur,
-  ...props
-}) {
+export default function Inputs({ name, placeholder, blur, ...props }) {
   // const [inputName, setInputName] = useState(name);
   const [show, setShow] = useState(false);
 

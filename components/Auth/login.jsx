@@ -30,14 +30,14 @@ export function UserAuthForm({ className, ...props }) {
   return (
     <div
       className={cn(
-        " min-h-screen flex flex-col items-center justify-center",
+        "min-h-screen bg-slate-900 flex flex-col items-center justify-center",
         className
       )}
       {...props}
     >
       <form onSubmit={onSubmit} className="w-[350px]">
-        <div className="grid gap-2">
-          <div className="grid gap-1">
+        <div className="grid gap-2 ">
+          <div>
             <Label className="sr-only" htmlFor="email">
               Email
             </Label>
@@ -46,14 +46,15 @@ export function UserAuthForm({ className, ...props }) {
               placeholder="name@example.com"
               type="text"
               autoCapitalize="none"
-              autoComplete="email"
+              autoComplete="none"
               autoCorrect="off"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="bg-white w-full"
             />
           </div>
-          <div className="grid gap-1">
+          <div>
             <Label className="sr-only" htmlFor="password">
               Password
             </Label>
@@ -67,6 +68,7 @@ export function UserAuthForm({ className, ...props }) {
               disabled={isLoading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="bg-white w-full"
             />
           </div>
           <Button disabled={isLoading}>

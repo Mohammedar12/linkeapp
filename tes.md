@@ -12,6 +12,8 @@ export function Links({ value, type, id, remove }) {
   const [checked, setChecked] = useState(value?.display);
   const [disabled, setDisabled] = useState(!value?.header);
   const [header, setHeader] = useState(value?.header);
+  // const [url, setUrl] = useState(value?.url);
+  // const [title, setTitle] = useState();
   const [URL, setURL] = useState({ url: value?.url, title: value?.title });
 
   useEffect(() => {
@@ -69,10 +71,10 @@ export function Links({ value, type, id, remove }) {
     }
   };
 
-  const handleSwitchChange = async (id) => {
+  const handleSwitchChange = async (type) => {
     const newChecked = !checked;
     setChecked(newChecked);
-    await editHeader(header, id, newChecked);
+    // await editHeader(header, value.id, newChecked);
   };
 
   const dragControls = useDragControls();
@@ -105,9 +107,9 @@ export function Links({ value, type, id, remove }) {
               </Button>
               <Switch
                 checked={checked}
-                onChange={() => handleSwitchChange(id)}
+                onChange={handleSwitchChange}
                 disabled={disabled}
-                onClick={() => handleSwitchChange(id)}
+                onClick={(e) => setChecked(!checked)}
               />
             </div>
             <Button
@@ -144,7 +146,7 @@ export function Links({ value, type, id, remove }) {
               </Button>
               <Switch
                 checked={checked}
-                onChange={handleSwitchChange}
+                onChange={handleSwitchChange(value?.type)}
                 disabled={disabled}
                 onClick={(e) => setChecked(!checked)}
                 // type={value?.type}

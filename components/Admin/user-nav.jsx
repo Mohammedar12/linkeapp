@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState, useContext } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+// import { cookies } from "next/headers";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +14,16 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getCookies, getCookie } from "cookies-next";
+import AuthContext from "@/context/auth";
+import Link from "next/link";
 
 export function UserNav() {
-  return (
+  // getCookie("id");
+  const { logoutUser } = useContext(AuthContext);
+
+  // console.log(getCookies())
+  return getCookie("jwtt") !== undefined ? (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -48,11 +59,13 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => logoutUser()}>
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  ) : (
+    <Link href="/admin/login"> Login </Link>
   );
 }

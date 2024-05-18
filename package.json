@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "expo start",
-    "lint": "next lint",
-    "web": "expo start --web"
+    "start": "next start"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
