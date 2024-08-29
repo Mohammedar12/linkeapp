@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
-import { Input } from "../ui/input";
+import { Input } from "../ui/Input";
 import { Button } from "../ui/button";
 import { TbPencilPlus } from "react-icons/tb";
 
@@ -39,8 +39,7 @@ export default function Inputs({ name, placeholder, blur, ...props }) {
         ${show ? " hidden " : "inline-flex"}`}
       >
         <Button
-          className="bg-transparent text-white
-         hover:bg-opacity-1 hover:bg-black"
+          className={`bg-transparent text-secondary-foreground hover:bg-opacity-1 dark:hover:bg-background hover:bg-secondary `}
           onClick={() => {
             setShow(true);
             input.current.focus();

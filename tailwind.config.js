@@ -115,6 +115,11 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        xs: { max: "400px" },
+        mxl: { max: "1279px" },
+        mobile: { min: "401px", max: "520px" },
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

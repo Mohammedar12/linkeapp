@@ -8,25 +8,36 @@ import { Switch } from "@/components/ui/switch";
 import { Reorder, useDragControls } from "framer-motion";
 import axios from "axios";
 
-export function Links({ value, type, id, remove }) {
+export function Links({
+  value,
+  type,
+  id,
+  remove,
+  items,
+  index,
+  setItems,
+  reorder,
+}) {
   const [checked, setChecked] = useState(value?.display);
-  const [disabled, setDisabled] = useState(!value?.header);
-  const [header, setHeader] = useState(value?.header);
-  const [URL, setURL] = useState({ url: value?.url, title: value?.title });
+  const [disabled, setDisabled] = useState(!value?.title);
+  const [header, setHeader] = useState(value?.title);
+  const [title, setTitle] = useState(value?.title);
+  const [URL, setURL] = useState(value?.url);
 
   useEffect(() => {
-    // Update disabled state if header changes
     setDisabled(header === "");
-    setDisabled(URL.url === "");
+    setDisabled(URL === "");
   }, []);
 
-  const editHeader = async (header, id, display) => {
+  const editHeader = async (title, id, display) => {
+    console.log(value);
     try {
       const { data } = await axios.put(
         `${process.env.base_url}/headers/${id}`,
         {
-          header,
+          title,
           display,
+          index,
         },
         {
           headers: {
@@ -36,22 +47,22 @@ export function Links({ value, type, id, remove }) {
           withCredentials: true,
         }
       );
-      setHeader(data.header);
+      setHeader(data.title);
       setChecked(data?.display);
-      // setDisabled(header == "" ? true : false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const editLink = async (url, id, display) => {
+  const editLink = async (url, id, title, display) => {
     try {
       const { data } = await axios.put(
         `${process.env.base_url}/links/${id}`,
         {
-          url: url.url,
-          title: url.title,
+          url: url,
+          title: title,
           display,
+          index,
         },
         {
           headers: {
@@ -62,7 +73,8 @@ export function Links({ value, type, id, remove }) {
         }
       );
 
-      setURL({ url: data.url, title: value?.title });
+      setURL(data?.url);
+      setTitle(data?.title);
       setChecked(data?.display);
     } catch (error) {
       console.log(error);
@@ -76,31 +88,47 @@ export function Links({ value, type, id, remove }) {
   };
 
   const dragControls = useDragControls();
-
+  const [order, setOrder] = useState(items);
   const startDrag = (e) => {
     dragControls.start(e, { snapToCursor: true });
+  };
+
+  useEffect(() => {
+    setItems(order);
+  }, [order]);
+
+  const updateItems = () => {
+    const updatedItems = items.map((item, idx) => ({ ...item, index: idx }));
+    console.log(updatedItems);
+    setItems(updatedItems);
+    reorder(updatedItems);
   };
   return (
     <Reorder.Item
       value={value}
       dragListener={false}
       dragControls={dragControls}
+      onDragEnd={updateItems}
     >
       {type === "Header" ? (
-        <Card className="bg-neutral-700 p-3 m-4 flex justify-between items-center ">
+        <Card
+          className={`dark:bg-secondary bg-background p-3 m-4 ${
+            index === 0 ? "my-4 mb-14" : "my-14"
+          } flex justify-between items-center`}
+        >
           <MdDragIndicator className="cursor-grab" onPointerDown={startDrag} />
 
           <Inputs
-            name={header}
-            value={header}
-            onChange={(e) => setHeader(e.target.value)}
+            name={title}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Headline title"
-            blur={() => editHeader(header, id)}
+            blur={() => editLink("", value?._id, title)}
             type={value?.type}
           />
-          <div className="flex flex-col justify-between  items-end gap-4">
+          <div className="flex flex-col items-end justify-between gap-4">
             <div className="flex gap-3">
-              <Button className="bg-transparent hover:bg-transparent text-white">
+              <Button className="text-white bg-transparent hover:bg-transparent">
                 <CiShare1 />
               </Button>
               <Switch
@@ -111,35 +139,35 @@ export function Links({ value, type, id, remove }) {
               />
             </div>
             <Button
-              onClick={() => remove("headers", id)}
-              className="bg-transparent hover:bg-transparent text-white"
+              onClick={() => remove(value?._id)}
+              className="text-white bg-transparent hover:bg-transparent"
             >
               <MdDeleteOutline />
             </Button>
           </div>
         </Card>
       ) : (
-        <Card className="bg-neutral-700 p-3 m-4 flex justify-between items-center ">
+        <Card className="flex items-center justify-between p-3 m-4 dark:bg-secondary bg-background ">
           <MdDragIndicator className="cursor-grab" onPointerDown={startDrag} />
 
           <Inputs
-            onChange={(e) => setURL({ url: URL.url, title: e.target.value })}
-            blur={() => editLink(URL, id)}
-            name={URL.title}
-            value={URL.title}
+            onChange={(e) => setTitle(e.target.value)}
+            blur={() => editLink(URL, value?._id, title)}
+            name={title}
+            value={title}
             placeholder="Title"
           />
           <Inputs
-            onChange={(e) => setURL({ url: e.target.value, title: URL.title })}
-            blur={() => editLink(URL, id)}
-            name={URL.url}
-            value={URL.url}
+            onChange={(e) => setURL(e.target.value)}
+            blur={() => editLink(URL, value?._id)}
+            name={URL}
+            value={URL}
             placeholder="URL"
           />
 
-          <div className="flex flex-col justify-between  items-end gap-4">
+          <div className="flex flex-col items-end justify-between gap-4">
             <div className="flex gap-3">
-              <Button className="bg-transparent hover:bg-transparent text-white">
+              <Button className="text-white bg-transparent hover:bg-transparent">
                 <CiShare1 />
               </Button>
               <Switch
@@ -151,8 +179,8 @@ export function Links({ value, type, id, remove }) {
               />
             </div>
             <Button
-              onClick={() => remove("links", id)}
-              className="bg-transparent hover:bg-transparent text-white"
+              onClick={() => remove(value?._id)}
+              className="text-white bg-transparent hover:bg-transparent"
             >
               <MdDeleteOutline />
             </Button>

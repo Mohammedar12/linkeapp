@@ -20,25 +20,30 @@ import Link from "next/link";
 
 export function UserNav() {
   // getCookie("id");
-  const { logoutUser } = useContext(AuthContext);
+  const { logoutUser, userData } = useContext(AuthContext);
 
   // console.log(getCookies())
-  return getCookie("jwtt") !== undefined ? (
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarImage src={userData?.avatar?.url} alt={userData?.username} />
+            <AvatarFallback className="uppercase">
+              {" "}
+              {userData?.username?.slice(0, 2)}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
+            <p className="text-sm font-medium leading-none">
+              {userData?.username}
+            </p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {userData?.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -65,7 +70,5 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  ) : (
-    <Link href="/admin/login"> Login </Link>
   );
 }

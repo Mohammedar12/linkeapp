@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 export function middleware(request) {
   let cookie = request.cookies.get("jwt");
   let scuerUrl =
+    request.nextUrl.pathname == "/" ||
     request.nextUrl.pathname == "/login" ||
-    request.nextUrl.pathname == "/sing-up";
-  console.log(scuerUrl);
+    request.nextUrl.pathname == "/signup";
 
   if (scuerUrl) {
     if (cookie) {
@@ -21,5 +21,5 @@ export function middleware(request) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/profile", "/login", "/sing-up"],
+  matcher: ["/admin/:path*", "/login", "/signup"],
 };

@@ -13,7 +13,7 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
             `peer flex h-9  rounded-sm outline-none  bg-transparent border-input  px-3 py-1
          text-sm  transition-colors  
           disabled:cursor-not-allowed 
-         disabled:opacity-50  `,
+         disabled:opacity-50 text-black  dark:text-white `,
             className
           )}
           ref={ref}

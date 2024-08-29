@@ -5,7 +5,8 @@ const nextConfig = {
   },
   env: {
     TOKEN: "sbbs76bgsyegfyrbfyue",
-    // base_url: "https://api.next-ecmrc.com",
+    OPEN_AI_SEC_KEY: "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",
+    // base_url: "https://f3c8-176-224-83-230.ngrok-free.app",
     base_url: "http://localhost:5000",
   },
 };
