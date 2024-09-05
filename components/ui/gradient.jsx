@@ -351,7 +351,7 @@ export default function Gradient() {
                   </h3>
                   <div className="grid grid-cols-10 gap-1">
                     {colors.map((color, index) => (
-                      <div className="flex flex-col items-center">
+                      <div key={index} className="flex flex-col items-center">
                         <button
                           key={color}
                           className={`w-14 h-10 rounded-md focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
@@ -378,7 +378,7 @@ export default function Gradient() {
                   </h3>
                   <div className="grid grid-cols-10 gap-1">
                     {colors.map((color, index) => (
-                      <div className="flex flex-col items-center">
+                      <div key={index} className="flex flex-col items-center">
                         <button
                           key={color}
                           className="h-10 rounded-md w-14 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

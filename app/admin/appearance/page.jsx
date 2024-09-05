@@ -21,7 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
+import _ from "lodash";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,16 +49,18 @@ export default function AppearancePage() {
     setAbout,
     loading,
     avatar,
-    avatarPreview,
+    bgImage,
     skills,
     setSkills,
     theme,
     setTheme,
+    bgOpacity,
+    setbgOpacity,
   } = useContext(AppearanceContext);
 
   const [bgColor, setBgColor] = useState(theme?.bgColor || "#3B82F6");
   const [avatarBgColor, setAvatarBgColor] = useState(
-    theme?.AvatarBgColor || userSite?.theme.AvatarBgColor || "#3B82F6"
+    theme?.AvatarBgColor || userSite?.theme?.AvatarBgColor || "#000000"
   );
 
   const [isParticles, setIsParticles] = useState(theme?.isParticles || true);
@@ -97,19 +99,53 @@ export default function AppearancePage() {
     setSkills(skills?.filter((skill) => skill !== skillToRemove));
   };
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-
+  const submitHandler = (event) => {
+    event.preventDefault();
     const payload = convertValuesToPayload(socials);
 
-    const formData = new FormData();
-    formData.set("skills", JSON.stringify(skills));
-    formData.set("title", profileTitle);
-    formData.set("theme", JSON.stringify(theme));
-    formData.set("social", JSON.stringify(payload));
-    formData.set("about", about);
-    formData.set("avatar", avatar);
+    if (avatar && avatar.image) {
+      console.log("Avatar File:", avatar.image);
+    } else {
+      console.log("No avatar file provided or avatar.image is empty.");
+    }
 
+    const newProfile = {
+      skills, // The updated skills array
+      title: profileTitle, // The updated title
+      theme, // The updated theme object
+      social: payload, // The updated social links array
+      about, // The updated about text
+      avatar: avatar.image, // The new avatar image (should be a File object)
+      bgImage: bgImage.image, // The new background image (should be a File object)
+    };
+
+    const changedFields = _.omitBy(newProfile, (value, key) => {
+      return _.isEqual(value, _.get(userSite, key));
+    });
+
+    console.log("Changed Fields:", changedFields);
+
+    const formData = new FormData();
+
+    _.forOwn(changedFields, (value, key) => {
+      if (value instanceof File) {
+        console.log(`Adding ${key} as a file to FormData.`);
+        formData.append(key, value, value.name);
+      } else if (_.isObject(value) && !(value instanceof File)) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    // Log the FormData content, including the file details
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}:`, value.name);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
     updateSite(formData);
   };
 
@@ -154,7 +190,9 @@ export default function AppearancePage() {
                   <Avatar className="w-20 h-20 rounded-md ">
                     <AvatarImage
                       alt="@shadcn"
-                      src={avatarPreview ? avatarPreview : avatar || user1}
+                      src={
+                        avatar.preview ? avatar.preview : avatar.image || user1
+                      }
                     />
                     <AvatarFallback>JP</AvatarFallback>
                   </Avatar>
@@ -167,7 +205,7 @@ export default function AppearancePage() {
                       id="file"
                       className="sr-only"
                       type="file"
-                      onChange={onAvatarChange}
+                      onChange={avatar.handleImageChange}
                     />
                     Upload Your Photo
                   </Label>
@@ -282,12 +320,42 @@ export default function AppearancePage() {
             <div className="font-medium"></div>
             <Accordion type="single" collapsible>
               <AccordionItem value="item-1">
-                <AccordionTrigger>
-                  {" "}
-                  Background Color Style :{" "}
-                  {theme?.isGradient ? " Gradient" : " Color"}
+                <AccordionTrigger className="text-lg">
+                  Background
                 </AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="px-4">
+                  <div className="space-y-4">
+                    <h2 className="text-sm font-medium text-gray-900 dark:text-gray-50">
+                      Background Image
+                    </h2>
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="w-20 h-20 rounded-md ">
+                        <AvatarImage
+                          alt="@shadcn"
+                          src={
+                            bgImage.preview
+                              ? bgImage.preview
+                              : bgImage.image || user1
+                          }
+                        />
+                        <AvatarFallback>JP</AvatarFallback>
+                      </Avatar>
+                      <Label
+                        htmlFor="file"
+                        className="p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        variant="outline"
+                      >
+                        <Input
+                          id="file"
+                          className="sr-only"
+                          type="file"
+                          onChange={bgImage.handleImageChange}
+                        />
+                        Upload
+                      </Label>
+                      {/* <Input type="file" /> */}
+                    </div>
+                  </div>
                   <Tabs defaultValue={`gradient`} className="space-y-6">
                     <TabsList className="mt-3">
                       <TabsTrigger
@@ -315,8 +383,11 @@ export default function AppearancePage() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger> Avatar Color</AccordionTrigger>
-                <AccordionContent>
+                <AccordionTrigger className="text-lg">
+                  {" "}
+                  Avatar Color
+                </AccordionTrigger>
+                <AccordionContent className="px-4">
                   <PickColor
                     color={avatarBgColor}
                     setColor={setAvatarBgColor}
@@ -324,8 +395,11 @@ export default function AppearancePage() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
-                <AccordionTrigger> Particles</AccordionTrigger>
-                <AccordionContent className="flex items-center justify-between">
+                <AccordionTrigger className="text-lg">
+                  {" "}
+                  Particles
+                </AccordionTrigger>
+                <AccordionContent className="flex items-center justify-between px-4">
                   <h3>Show Particles</h3>
                   <Switch onClick={handleSwitchChange} checked={isParticles} />
                 </AccordionContent>

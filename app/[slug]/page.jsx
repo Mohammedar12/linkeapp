@@ -239,7 +239,7 @@ export default function UserSite() {
             />
           )}
           <div
-            className="absolute inset-0 -z-20 h-svh xs:h-full opacity-70" // bg-gradient-to-r from-gray-900 to-black
+            className="absolute inset-0 opacity-50 -z-20 h-svh xs:h-full" // bg-gradient-to-r from-gray-900 to-black
             style={{
               background: site?.theme.isGradient
                 ? `linear-gradient(${site?.theme?.gradient?.dir}, ${site?.theme?.gradient?.from}, ${site?.theme?.gradient?.to})`

@@ -25,33 +25,8 @@ export const metadata = {
 export default function OverviewPage() {
   return (
     <>
-      {/* <div className="">
-        <Image
-          src="/examples/dashboard-light.png"
-          width={1280}
-          height={866}
-          alt="Dashboard"
-          className="block dark:hidden"
-        />
-        <Image
-          src="/examples/dashboard-dark.png"
-          width={1280}
-          height={866}
-          alt="Dashboard"
-          className="hidden dark:block"
-        />
-      </div> */}
-      <div className=" flex-col md:flex">
-        <div className="border-b">
-          <div className="flex h-16 items-center px-4">
-            <MainNav className="mx-6" />
-            <div className="ml-auto flex items-center space-x-4">
-              {/* <Search /> */}
-              <UserNav />
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-col md:flex">
+        <div className="flex-1 p-8 pt-6 space-y-4">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
             <div className="flex items-center space-x-2">
@@ -74,7 +49,7 @@ export default function OverviewPage() {
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-sm font-medium">
                       Total Revenue
                     </CardTitle>
@@ -86,7 +61,7 @@ export default function OverviewPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
+                      className="w-4 h-4 text-muted-foreground"
                     >
                       <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
@@ -99,7 +74,7 @@ export default function OverviewPage() {
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-sm font-medium">
                       Subscriptions
                     </CardTitle>
@@ -111,7 +86,7 @@ export default function OverviewPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
+                      className="w-4 h-4 text-muted-foreground"
                     >
                       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                       <circle cx="9" cy="7" r="4" />
@@ -126,7 +101,7 @@ export default function OverviewPage() {
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-sm font-medium">Sales</CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +111,7 @@ export default function OverviewPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
+                      className="w-4 h-4 text-muted-foreground"
                     >
                       <rect width="20" height="14" x="2" y="5" rx="2" />
                       <path d="M2 10h20" />
@@ -150,7 +125,7 @@ export default function OverviewPage() {
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-sm font-medium">
                       Active Now
                     </CardTitle>
@@ -162,7 +137,7 @@ export default function OverviewPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
+                      className="w-4 h-4 text-muted-foreground"
                     >
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
