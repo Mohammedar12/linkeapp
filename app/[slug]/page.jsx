@@ -255,7 +255,7 @@ export default function UserSite() {
             }}
           >
             <Image
-              src={bgImage}
+              src={site?.theme?.bgImage?.url || bgImage}
               width={500}
               height={500}
               className="inset-0 object-cover object-center w-full h-full "

@@ -237,6 +237,10 @@ export const AppearanceProvider = ({ children }) => {
         theme,
         setTheme,
         useImageUpload,
+        location,
+        setLocation,
+        experience,
+        setExperience,
       }}
     >
       {children}

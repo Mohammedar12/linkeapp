@@ -74,8 +74,7 @@ export const SiteProvider = ({ children }) => {
           withCredentials: true,
         }
       );
-      //   localStorage.setItem("userSite", JSON.stringify(data));
-      //   setUserSite(JSON.parse(localStorage.getItem("userSite")));
+
       setLoading(false);
     } catch (error) {
       toast.error(error);

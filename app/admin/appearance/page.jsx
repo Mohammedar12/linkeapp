@@ -56,6 +56,10 @@ export default function AppearancePage() {
     setTheme,
     bgOpacity,
     setbgOpacity,
+    location,
+    setLocation,
+    experience,
+    setExperience,
   } = useContext(AppearanceContext);
 
   const [bgColor, setBgColor] = useState(theme?.bgColor || "#3B82F6");
@@ -108,15 +112,20 @@ export default function AppearancePage() {
     } else {
       console.log("No avatar file provided or avatar.image is empty.");
     }
+    if (bgImage && bgImage.image) {
+      console.log("bgImage File:", bgImage.image);
+    } else {
+      console.log("No bgImage file provided or bgImage.image is empty.");
+    }
 
     const newProfile = {
-      skills, // The updated skills array
-      title: profileTitle, // The updated title
-      theme, // The updated theme object
-      social: payload, // The updated social links array
-      about, // The updated about text
-      avatar: avatar.image, // The new avatar image (should be a File object)
-      bgImage: bgImage.image, // The new background image (should be a File object)
+      skills,
+      title: profileTitle,
+      theme,
+      social: payload,
+      about,
+      avatar: avatar.image,
+      bgImage: bgImage.image,
     };
 
     const changedFields = _.omitBy(newProfile, (value, key) => {
@@ -128,8 +137,16 @@ export default function AppearancePage() {
     const formData = new FormData();
 
     _.forOwn(changedFields, (value, key) => {
-      if (value instanceof File) {
-        console.log(`Adding ${key} as a file to FormData.`);
+      if (key === "theme") {
+        // Handle theme object separately
+        _.forOwn(value, (themeValue, themeKey) => {
+          if (themeKey === "bgImage" && themeValue instanceof File) {
+            formData.append("bgImage", themeValue, themeValue.name);
+          } else {
+            formData.append(`theme[${themeKey}]`, themeValue);
+          }
+        });
+      } else if (value instanceof File) {
         formData.append(key, value, value.name);
       } else if (_.isObject(value) && !(value instanceof File)) {
         formData.append(key, JSON.stringify(value));
@@ -294,6 +311,41 @@ export default function AppearancePage() {
                 </div>
               </div>
             </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                  Experience
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Add your experience years.
+                </p>
+              </div>
+              <Input
+                type="number"
+                className="w-full py-6 text-white dark:bg-slate-900"
+                placeholder="Enter your  Profile Title..."
+                onChange={(e) => setExperience(e.target.value)}
+                value={experience}
+              />
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                  Location
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Add your location if you want.
+                </p>
+              </div>
+              <Input
+                type="number"
+                className="w-full py-6 text-white dark:bg-slate-900"
+                placeholder="Enter your  Profile Title..."
+                onChange={(e) => setExperience(e.target.value)}
+                value={experience}
+              />
+            </div>
             <div className="space-y-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
@@ -385,7 +437,7 @@ export default function AppearancePage() {
               <AccordionItem value="item-2">
                 <AccordionTrigger className="text-lg">
                   {" "}
-                  Avatar Color
+                  Avatar Border Color
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
                   <PickColor
