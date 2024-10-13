@@ -2,35 +2,46 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "@/utils/axios";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import AuthContext from "@/context/auth";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  setEncodedCookie,
+  decodeCookieValue,
+  getDecodedCookie,
+} from "@/utils/encoding";
 
 const SiteContext = createContext();
 
 export const SiteProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [userSite, setUserSite] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [tokenSend, setTokenSent] = useState(null);
+  const [iframReload, setIframReload] = useState(0);
   const [error, setError] = useState(null);
-
   const { userData } = useContext(AuthContext);
+  const [site, setSite] = useState();
 
+  const router = useRouter();
+  const params = useParams();
   useEffect(() => {
     fetchData();
   }, []);
 
-  const param = useParams();
-
   const fetchData = async () => {
     try {
-      const { data } = await axios.get(`${process.env.base_url}/sites/site`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      console.log(data);
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/site`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
       setItems(data.links.sort((a, b) => a.index - b.index));
       localStorage.setItem("userSite", JSON.stringify(data));
       setUserSite(JSON.parse(localStorage.getItem("userSite")));
@@ -39,10 +50,29 @@ export const SiteProvider = ({ children }) => {
     }
   };
 
+  const getSite = async (slug) => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/site/${slug}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      setSite(data);
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const createSite = async (formData) => {
     try {
       const { data } = await axios.post(
-        `${process.env.base_url}/sites/create`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/create`,
         formData,
         {
           headers: {
@@ -53,6 +83,7 @@ export const SiteProvider = ({ children }) => {
       );
 
       setLoading(false);
+      // setCookie("registerSteps", data.registerSteps);
       router.push("/admin");
     } catch (error) {
       toast.error(error);
@@ -65,7 +96,7 @@ export const SiteProvider = ({ children }) => {
   const updateSite = async (formData) => {
     try {
       const { data } = await axios.put(
-        `${process.env.base_url}/sites/update`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/update`,
         formData,
         {
           headers: {
@@ -84,10 +115,56 @@ export const SiteProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (registerSteps) => {
+    try {
+      const { data } = await axios.put(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/updateuser`,
+        registerSteps,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setLoading(false);
+      // setCookie("registerSteps", data.registerSteps);
+    } catch (error) {
+      toast.error(error);
+
+      setLoading(false);
+      setError(error);
+    }
+  };
+
+  const sendVerifyToken = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/send-verifyToken`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      setLoading(false);
+      setTokenSent(data?.message);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error?.response?.data?.message);
+      console.log(error);
+      setTokenSent(error?.response?.data?.message);
+    }
+  };
+
   const newHeader = async (header) => {
     try {
       const { data } = await axios.post(
-        `${process.env.base_url}/headers/new`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/headers/new`,
         {
           title: header,
         },
@@ -100,7 +177,7 @@ export const SiteProvider = ({ children }) => {
       );
 
       const addToSite = await axios.put(
-        `${process.env.base_url}/sites/addHeaders`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/addHeaders`,
         {
           headers: data._id,
         },
@@ -122,7 +199,7 @@ export const SiteProvider = ({ children }) => {
   const newLink = async (url, type) => {
     try {
       const { data } = await axios.post(
-        `${process.env.base_url}/links/new`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/links/new`,
         {
           url: url,
           type,
@@ -136,7 +213,7 @@ export const SiteProvider = ({ children }) => {
       );
 
       const addToSite = await axios.put(
-        `${process.env.base_url}/sites/addLinks`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/addLinks`,
         {
           links: data._id,
         },
@@ -159,7 +236,7 @@ export const SiteProvider = ({ children }) => {
     console.log(items);
     try {
       const { data } = await axios.delete(
-        `${process.env.base_url}/links/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/links/${id}`,
         {},
         {
           headers: {
@@ -170,7 +247,7 @@ export const SiteProvider = ({ children }) => {
       );
 
       const { data: removeFromSites } = await axios.delete(
-        `${process.env.base_url}/sites/remove`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/remove`,
         {
           data: { itemId: id },
         },
@@ -192,7 +269,7 @@ export const SiteProvider = ({ children }) => {
   const reorder = async (updatedItems) => {
     try {
       const response = await axios.put(
-        `${process.env.base_url}/sites/reorder`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/reorder`,
         {
           links: updatedItems.map((item, index) => ({
             id: item.id,
@@ -205,10 +282,6 @@ export const SiteProvider = ({ children }) => {
       console.error("Error updating order in backend", error);
     }
   };
-  // const reorder = (newOrder) => {
-  //   console.log(newOrder);
-  //   axios.put(`${process.env.base_url}/sites/reorder`, { newOrder: newOrder });
-  // };
 
   return (
     <SiteContext.Provider
@@ -226,6 +299,17 @@ export const SiteProvider = ({ children }) => {
         updateSite,
         setUserSite,
         userSite,
+        updateUser,
+        sendVerifyToken,
+        tokenSend,
+        setTokenSent,
+        loading,
+        setLoading,
+        getSite,
+        site,
+        setSite,
+        iframReload,
+        setIframReload,
       }}
     >
       {children}

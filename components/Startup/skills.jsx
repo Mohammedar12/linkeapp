@@ -1,5 +1,5 @@
 "use client ";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
   CardTitle,
@@ -12,13 +12,14 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
+import AppearanceContext from "@/context/appearance";
 
 export default function Skills(props) {
   const {
     nextStep,
     prevStep,
-    skills,
-    setSkills,
+    // skills,
+    // setSkills,
     // newSkill,
     // setNewSkill,
     // addSkill,
@@ -26,10 +27,14 @@ export default function Skills(props) {
   } = props;
 
   const [newSkill, setNewSkill] = useState("");
+  const { skills, setSkills } = useContext(AppearanceContext);
 
   const addSkill = (e) => {
     e.preventDefault();
-    if (newSkill && skills?.length < 3 && !skills?.includes(newSkill)) {
+    console.log(skills);
+    if (newSkill && skills && !skills?.includes(newSkill)) {
+      console.log(skills);
+
       setSkills([...skills, newSkill]);
       setNewSkill("");
     }
@@ -45,7 +50,7 @@ export default function Skills(props) {
         <CardTitle>Add Your Skills</CardTitle>
         <CardDescription>Enter 1-3 Skills.</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col  gap-4">
+      <CardContent className="flex flex-col gap-4">
         {skills?.length !== 3 && (
           <form onSubmit={addSkill} className="flex items-center gap-4">
             <Input
@@ -60,11 +65,11 @@ export default function Skills(props) {
           </form>
         )}
         {skills?.length !== 0 && (
-          <ul className="mx-4 mb-3 flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-2 mx-4 mb-3">
             {skills?.map((skill, index) => (
               <li
                 key={index}
-                className="bg-primary-foreground flex items-center gap-2 p-1 w-fit rounded-md px-2 text-sm"
+                className="flex items-center gap-2 p-1 px-2 text-sm rounded-md bg-primary-foreground w-fit"
               >
                 {skill}
                 <IoIosRemoveCircleOutline
@@ -80,13 +85,13 @@ export default function Skills(props) {
         <div className="flex items-center space-x-2">
           <Button
             onClick={() => prevStep()}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="text-white bg-blue-500 hover:bg-blue-600"
             variant="outline"
           >
             Previous
           </Button>
           <Button
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="text-white bg-blue-500 hover:bg-blue-600"
             variant="outline"
             onClick={() => nextStep()}
           >

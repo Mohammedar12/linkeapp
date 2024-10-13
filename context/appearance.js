@@ -14,13 +14,18 @@ import OpenAI from "openai";
 import { IoLogoInstagram, IoLogoYoutube, IoLogoTiktok } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { useImageUpload } from "@/utils/uploadImages";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 
 const AppearanceContext = createContext();
 export const AppearanceProvider = ({ children }) => {
   const { userSite } = useContext(SiteContext);
   const { userData } = useContext(AuthContext);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const searchParams = useSearchParams();
+  const steps = ["specialization", "skills", "socials", "appearance"];
+  const [currentStep, setCurrentStep] = useState(
+    searchParams.get("step") || steps[0]
+  );
 
   const [profileTitle, setProfileTitle] = useState();
   const [slug, setSlug] = useState();
@@ -37,17 +42,19 @@ export const AppearanceProvider = ({ children }) => {
   const avatar = useImageUpload();
   const bgImage = useImageUpload();
 
+  const router = useRouter();
+
   useEffect(() => {
     setProfileTitle(userSite?.title);
 
     setAbout(userSite?.about);
 
-    setSkills(userSite?.skills);
-    // setAvatar(userSite?.avatar?.url);
+    setSkills(userSite?.skills || []);
 
     avatar.updateImage(userSite?.avatar?.url);
 
     setTheme(userSite?.theme);
+    setSlug(userSite?.slug);
 
     bgImage.updateImage(userSite?.theme?.bgImage?.url);
 
@@ -68,6 +75,13 @@ export const AppearanceProvider = ({ children }) => {
 
     getSocials();
   }, [userSite]);
+
+  useEffect(() => {
+    const step = searchParams.get("step");
+    if (step && steps.includes(step)) {
+      setCurrentStep(step);
+    }
+  }, [searchParams]);
 
   // ............. socials functions
 
@@ -150,7 +164,7 @@ export const AppearanceProvider = ({ children }) => {
   });
 
   const openai = new OpenAI({
-    apiKey: process.env.OPEN_AI_SEC_KEY,
+    apiKey: process.env.NEXT_PUBLIC_OPEN_AI_SEC_KEY,
     dangerouslyAllowBrowser: true,
   });
 
@@ -196,11 +210,21 @@ export const AppearanceProvider = ({ children }) => {
   // ......... End Images functions
 
   const nextStep = () => {
-    setCurrentStep((prev) => prev + 1);
+    const currentIndex = steps.indexOf(currentStep);
+    if (currentIndex < steps.length - 1) {
+      const nextStepName = steps[currentIndex + 1];
+      setCurrentStep(nextStepName);
+      router.push(`/signup/startup?step=${nextStepName.toLowerCase()}`);
+    }
   };
 
   const prevStep = () => {
-    setCurrentStep((prev) => prev - 1);
+    const currentIndex = steps.indexOf(currentStep);
+    if (currentIndex > 0) {
+      const prevStepName = steps[currentIndex - 1];
+      setCurrentStep(prevStepName);
+      router.push(`/signup/startup?step=${prevStepName.toLowerCase()}`);
+    }
   };
 
   return (

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { Copy, Check } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/Label";
+import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -36,32 +36,9 @@ const colorPresets = [
   "#FFC0CB",
 ];
 
-const colorNames = {
-  "#FF0000": "Red",
-  "#00FF00": "Lime",
-  "#0000FF": "Blue",
-  "#FFFF00": "Yellow",
-  "#00FFFF": "Cyan",
-  "#FF00FF": "Magenta",
-  "#C0C0C0": "Silver",
-  "#808080": "Gray",
-  "#800000": "Maroon",
-  "#808000": "Olive",
-  "#008000": "Green",
-  "#800080": "Purple",
-  "#008080": "Teal",
-  "#000080": "Navy",
-  "#FFA500": "Orange",
-  "#A52A2A": "Brown",
-  "#FFC0CB": "Pink",
-};
-
-export default function PickColor({ color, setColor }) {
+export default function PickColor({ color, setColor, IsGradient }) {
   const { theme, setTheme } = useContext(AppearanceContext);
-  // const [color, setColor] = useState(theme?.color || "#3B82F6");
-  const [avatarBgColor, setAvatarBgColor] = useState(
-    theme?.AvatarBgColor || "#3B82F6"
-  );
+
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
@@ -76,10 +53,13 @@ export default function PickColor({ color, setColor }) {
 
   return (
     <div className="space-y-4">
-      <div
-        className="w-full h-40 border rounded-md"
-        style={{ backgroundColor: color }}
-      />
+      {!IsGradient && (
+        <div
+          className="w-full h-40 border rounded-md"
+          style={{ backgroundColor: color }}
+        />
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="color-picker">Pick a color</Label>
         <div className="flex space-x-2">

@@ -27,25 +27,25 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background: #0f0f13;
+    --foreground: #f8fafc;
+    --card: #33e1ed;
+    --card-foreground: #33c8ed;
+    --popover: #09090b;
+    --popover-foreground: #f8fafc;
+    --primary: #1e1e2c;
+    --primary-foreground: #0f172a;
+    --secondary: #2d2d44;
+    --secondary-foreground: #2d2d44;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #1e293b;
+    --accent-foreground: #f8fafc;
+    --destructive: #821e1e;
+    --destructive-foreground: #6383a3;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #2563eb;
   }
 }
 
@@ -66,15 +66,18 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #999;
 }
 
-body::-webkit-scrollbar {
-  width: 0px;
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  width: 2px;
 }
 
-body::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track,
+div::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-body::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
 }

@@ -1,10 +1,126 @@
-import Link from "next/link";
+// import Link from "next/link";
+
+// export default function NotFound() {
+//   return (
+//     <div className="flex flex-col items-center justify-center w-full h-screen">
+//       <svg
+//         className="w-1/2 text-blue-600 md:w-1/3 lg:w-1/4"
+//         xmlns="http://www.w3.org/2000/svg"
+//         data-name="Layer 1"
+//         viewBox="0 0 860.13137 571.14799"
+//         xmlnsXlink="http://www.w3.org/1999/xlink"
+//       >
+//         <path
+//           d="M605.66974,324.95306c-7.66934-12.68446-16.7572-26.22768-30.98954-30.36953-16.482-4.7965-33.4132,4.73193-47.77473,14.13453a1392.15692,1392.15692,0,0,0-123.89338,91.28311l.04331.49238q46.22556-3.1878,92.451-6.37554c22.26532-1.53546,45.29557-3.2827,64.97195-13.8156,7.46652-3.99683,14.74475-9.33579,23.20555-9.70782,10.51175-.46217,19.67733,6.87923,26.8802,14.54931,42.60731,45.371,54.937,114.75409,102.73817,154.61591A1516.99453,1516.99453,0,0,0,605.66974,324.95306Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#f2f2f2"
+//         ></path>
+//         <path
+//           d="M867.57068,709.78146c-4.71167-5.94958-6.6369-7.343-11.28457-13.34761q-56.7644-73.41638-106.70791-151.79237-33.92354-53.23-64.48275-108.50439-14.54864-26.2781-28.29961-52.96872-10.67044-20.6952-20.8646-41.63793c-1.94358-3.98782-3.8321-7.99393-5.71122-12.00922-4.42788-9.44232-8.77341-18.93047-13.43943-28.24449-5.31686-10.61572-11.789-21.74485-21.55259-28.877a29.40493,29.40493,0,0,0-15.31855-5.89458c-7.948-.51336-15.28184,2.76855-22.17568,6.35295-50.43859,26.301-97.65922,59.27589-140.3696,96.79771A730.77816,730.77816,0,0,0,303.32241,496.24719c-1.008,1.43927-3.39164.06417-2.37419-1.38422q6.00933-8.49818,12.25681-16.81288A734.817,734.817,0,0,1,500.80465,303.06436q18.24824-11.82581,37.18269-22.54245c6.36206-3.60275,12.75188-7.15967,19.25136-10.49653,6.37146-3.27274,13.13683-6.21547,20.41563-6.32547,24.7701-.385,37.59539,27.66695,46.40506,46.54248q4.15283,8.9106,8.40636,17.76626,16.0748,33.62106,33.38729,66.628,10.68453,20.379,21.83683,40.51955,34.7071,62.71816,73.77854,122.897c34.5059,53.1429,68.73651,100.08874,108.04585,149.78472C870.59617,709.21309,868.662,711.17491,867.57068,709.78146Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#fff"
+//         ></path>
+//         <path
+//           d="M868.89764,728.62189l-401.89343-.22345a4.00013,4.00013,0,0,1-3.9995-4.00709c.001-.55115.04688-54.47607.12329-154.8685l-.3623-6.03687c-.38233-6.36206,4.93524-11.78539,11.29411-11.78417h784.60782c6.48794-.00049,11.78344,5.27727,11.78344,11.76526v6.60157c.00263,49.30624.077,110.99878.15246,153.45192a4.00008,4.00008,0,0,1-3.99921,4.00726Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#3f3d56"
+//         ></path>
+//         <circle
+//           cx="519.44151"
+//           cy="234.44721"
+//           r="61.44167"
+//           fill="#3f3d56"
+//         ></circle>
+//         <circle cx="518.91719" cy="225.39076" r="41.65606" fill="#fff"></circle>
+//         <circle
+//           cx="514.49536"
+//           cy="270.3226"
+//           r="28.9721"
+//           fill="#3f3d56"
+//         ></circle>
+//         <path
+//           d="M929.0669,478.5523h-57.026v-57.026h57.026ZM873.764,421.2494h57.026v57.026H873.764Zm57.026,56.025H873.764v-57.026h57.026Zm0-113.51H873.764v-57.026h57.026Zm0-113.51H873.764v-57.026h57.026Zm-113.51,113.51h-57.026v-57.026h57.026Zm-56.026-56.025h57.026v57.026h-57.026Zm57.026,56.025h-57.026v-57.026h57.026Zm0-113.51h-57.026v-57.026h57.026ZM702.672,175.152h57.026v57.026h-57.026ZM759.698,232.178H702.672v-57.026h57.026Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#3f3d56"
+//         ></path>
+//         <path
+//           d="M766.1009,212.5523H699.0749v-57.026h67.0269Zm-66.0269-1h65.0269v-55.026h-65.0269Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#3f3d56"
+//         ></path>
+//         <path
+//           d="M700.31641,219.87729H685.00615v-15.31027h15.31026Zm-14.31027-1h13.31026v-13.31026H686.00614Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#fff"
+//         ></path>
+//         <path
+//           d="M767.07529,219.87729H751.76506v-15.31027h15.31023Zm-14.31024-1h13.31023v-13.31026H752.76505Z"
+//           transform="translate(-169.93432 -164.42601)"
+//           fill="#fff"
+//         ></path>
+//       </svg>
+//       <h1 className="mt-6 text-3xl font-semibold text-gray-800">
+//         404 - Page Not Found
+//       </h1>
+//       <p className="mt-2 text-gray-700">
+//         The page you are looking for might have been removed <br /> or is
+//         temporarily unavailable.
+//       </p>
+//       <a
+//         href="/admin"
+//         className="px-6 py-3 mt-4 mb-1 mr-1 text-sm font-bold text-white uppercase bg-blue-500 rounded shadow outline-none active:bg-blue-600 hover:shadow-lg focus:outline-none"
+//         type="button"
+//         style={{ transition: "all .15s ease" }}
+//       >
+//         Back to homepage
+//       </a>
+//     </div>
+//   );
+// }
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NotFound() {
+  const router = useRouter();
+
+  // router.asPath = "http://localhost:3000";
+
+  // useEffect(() => {
+  //   // Get the previous URL (referrer)
+  //   const previousUrl = document.referrer;
+
+  //   // Get the current domain
+  //   const currentDomain = window.location.origin;
+
+  //   // console.log(router.asPath);
+
+  //   if (previousUrl) {
+  //     try {
+  //       // Check if the referrer's domain matches the current domain
+  //       if (router.asPath === currentDomain) {
+  //         router.back(); // Redirect back if it's from the same domain
+  //       } else {
+  //         // Otherwise, redirect to the 404 page
+  //         router.replace("/404");
+  //       }
+  //     } catch (error) {
+  //       // In case of any error with parsing URL, redirect to 404
+  //       router.replace("/404");
+  //     }
+  //   } else {
+  //     console.log(currentDomain);
+  //     console.log(previousUrl);
+
+  //     // If referrer is empty or not available, redirect to 404 page
+  //     router.replace("/404");
+  //   }
+  // }, [router]);
+
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full h-screen">
       <svg
-        className="w-1/2 md:w-1/3 lg:w-1/4 text-blue-600"
+        className="w-1/2 text-blue-600 md:w-1/3 lg:w-1/4"
         xmlns="http://www.w3.org/2000/svg"
         data-name="Layer 1"
         viewBox="0 0 860.13137 571.14799"
@@ -59,16 +175,16 @@ export default function NotFound() {
           fill="#fff"
         ></path>
       </svg>
-      <h1 className="text-3xl font-semibold text-gray-800 mt-6">
+      <h1 className="mt-6 text-3xl font-semibold text-gray-800">
         404 - Page Not Found
       </h1>
-      <p className="text-gray-700 mt-2">
+      <p className="mt-2 text-gray-700">
         The page you are looking for might have been removed <br /> or is
         temporarily unavailable.
       </p>
       <a
         href="/admin"
-        className="mt-4 bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+        className="px-6 py-3 mt-4 mb-1 mr-1 text-sm font-bold text-white uppercase bg-blue-500 rounded shadow outline-none active:bg-blue-600 hover:shadow-lg focus:outline-none"
         type="button"
         style={{ transition: "all .15s ease" }}
       >

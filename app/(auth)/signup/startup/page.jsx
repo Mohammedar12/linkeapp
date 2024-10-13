@@ -2,14 +2,18 @@
 
 import Social from "@/components/Startup/socials";
 import Appearance from "@/components/Startup/appearance";
-import Content from "@/components/Startup/content";
+import Specialization from "@/components/Startup/Specialization";
 import Skills from "@/components/Startup/skills";
-import { useContext, useEffect, useState } from "react";
-import AuthContext from "@/context/auth";
+import { Suspense, useContext, useEffect, useState } from "react";
+import SiteContext from "@/context/site";
 import AppearanceContext from "@/context/appearance";
+import { useSearchParams, useRouter } from "next/navigation";
+import AuthContext from "@/context/auth";
+export const dynamic = "force-dynamic";
 
-export default function page() {
-  const { createSite } = useContext(AuthContext);
+function SuspenseComp() {
+  const { logoutUser, userData } = useContext(AuthContext);
+  const { createSite, updateUser } = useContext(SiteContext);
   const {
     handleInputChange,
     selectedCategory,
@@ -43,6 +47,8 @@ export default function page() {
     setNewSkill,
     addSkill,
     removeSkill,
+    theme,
+    setTheme,
   } = useContext(AppearanceContext);
 
   const submitHandler = (e) => {
@@ -50,25 +56,38 @@ export default function page() {
 
     const payload = convertValuesToPayload(socials);
 
+    let isAcitve = userData.isVerified;
+
     const formData = new FormData();
     formData.set("slug", slug);
     formData.set("title", profileTitle);
     formData.set("social", JSON.stringify(payload));
     formData.set("about", about);
-    formData.set("avatar", avatar);
+    formData.set("theme", JSON.stringify(theme));
     formData.set("skills", JSON.stringify(skills));
+
+    if (avatar && avatar.image instanceof File) {
+      formData.append("avatar", avatar.image, avatar.image.name);
+    }
+
+    if (userData.isVerified) {
+      console.log(userData.isVerified);
+
+      formData.set("isAcitve", userData.isVerified);
+    }
 
     console.log(formData);
 
     createSite(formData);
+    updateUser({ registerSteps: true });
   };
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 1:
+    switch (currentStep.toLowerCase()) {
+      case "specialization":
         return (
           <>
-            <Content
+            <Specialization
               nextStep={nextStep}
               setAbout={setAbout}
               genreate={main}
@@ -79,20 +98,16 @@ export default function page() {
             />
           </>
         );
-      case 2:
+      case "skills":
         return (
           <Skills
             prevStep={prevStep}
             nextStep={nextStep}
             skills={skills}
             setSkills={setSkills}
-            newSkill={newSkill}
-            setNewSkill={setNewSkill}
-            addSkill={addSkill}
-            removeSkill={removeSkill}
           />
         );
-      case 3:
+      case "socials":
         return (
           <Social
             prevStep={prevStep}
@@ -103,7 +118,7 @@ export default function page() {
             handleInputChange={handleInputChange}
           />
         );
-      case 4:
+      case "appearance":
         return (
           <Appearance
             nextStep={nextStep}
@@ -117,18 +132,30 @@ export default function page() {
             onAvatarChange={onAvatarChange}
             avatar={avatarPreview}
             setAvatar={setAvatar}
+            setTheme={setTheme}
+            theme={theme}
             loading={loading}
           />
         );
       // Add more cases for additional steps if necessary
       default:
-        return <Content />;
+        return <Specialization />;
     }
   };
 
   return (
-    <main className="flex min-h-screen gap w-full items-center justify-center bg-gray-100 px-4 py-12 dark:bg-gray-900 sm:px-6 lg:px-8">
+    <main className="flex items-center justify-center w-full min-h-screen px-4 py-12 bg-gray-100 gap dark:bg-gray-900 sm:px-6 lg:px-8">
       {renderStep()}
+
+      <button onClick={() => logoutUser()}>logout</button>
     </main>
+  );
+}
+
+export default function page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuspenseComp />
+    </Suspense>
   );
 }

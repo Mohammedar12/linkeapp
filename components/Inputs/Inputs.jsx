@@ -17,13 +17,13 @@ export default function Inputs({ name, placeholder, blur, ...props }) {
   };
 
   return (
-    <CardContent className="p-2 grid ">
+    <CardContent className="grid p-2 ">
       <div
         className={` row-start-1 col-start-1 +
          ${show ? " opacity-100 " : " opacity-0 pointer-events-none"}`}
       >
         <Input
-          className="w-full"
+          className="w-full text-black"
           tabIndex={show ? 0 : -1}
           onBlur={() => {
             setShow(false);
@@ -39,7 +39,7 @@ export default function Inputs({ name, placeholder, blur, ...props }) {
         ${show ? " hidden " : "inline-flex"}`}
       >
         <Button
-          className={`bg-transparent text-secondary-foreground hover:bg-opacity-1 dark:hover:bg-background hover:bg-secondary `}
+          className={`bg-transparent text-secondary-foreground hover:bg-opacity-1  hover:bg-card-foreground `}
           onClick={() => {
             setShow(true);
             input.current.focus();

@@ -60,7 +60,8 @@ export default function UserAuthForm({ className, ...props }) {
               id="username"
               placeholder="Enter your username"
               type="text"
-              autoComplete="off"
+              autocomplete="false"
+              name="hidden"
               className="!text-white"
               disabled={isLoading}
               value={username}
@@ -79,7 +80,8 @@ export default function UserAuthForm({ className, ...props }) {
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
-              autoComplete="new-password"
+              autocomplete="false"
+              name="hidden"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -93,9 +95,6 @@ export default function UserAuthForm({ className, ...props }) {
               >
                 Password *
               </label>
-              <a className="text-sm text-purple-600 hover:underline" href="#">
-                Forgot your password?
-              </a>
             </div>
             <Input
               id="password"
@@ -120,7 +119,7 @@ export default function UserAuthForm({ className, ...props }) {
           </div>
           <Button
             disabled={isLoading}
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white"
+            className="w-full text-white bg-purple-600 hover:bg-purple-500"
           >
             Sign Up
           </Button>
@@ -134,18 +133,19 @@ export default function UserAuthForm({ className, ...props }) {
             </Link>
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
           </div>
-          <Button className="w-full bg-white  hover:bg-slate-400 hover:text-white text-gray-900 border border-gray-300 hover:border-slate-400">
+          <Button className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400">
             <ChromeIcon className="w-4 h-4 mr-2 " />
             Google
           </Button>
-          <Button className="w-full bg-white hover:bg-slate-400 hover:text-white text-gray-900 border border-gray-300 hover:border-slate-400">
+          <Button className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400">
             <AppleIcon className="w-4 h-4 mr-2 " />
             Apple
           </Button>
         </form>
         <div className="mt-6 text-sm text-center">
-          Have an account?
+          Have an account ?
           <Link className="text-purple-600 hover:underline" href="/login">
+            {" "}
             Login here
           </Link>
         </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-// import { cookies } from "next/headers";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +14,107 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getCookies, getCookie } from "cookies-next";
+import {
+  Sidebar,
+  SidebarBody,
+  SidebarButton,
+  SidebarLink,
+} from "@/components/ui/sidebar";
+import { TbBrandGoogleAnalytics, TbLogout2 } from "react-icons/tb";
+import { RiHome4Line, RiSettings2Line } from "react-icons/ri";
+import { LuShapes } from "react-icons/lu";
 import AuthContext from "@/context/auth";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/assets/icons/logo.svg";
 
 export function UserNav() {
   // getCookie("id");
   const { logoutUser, userData } = useContext(AuthContext);
 
-  // console.log(getCookies())
+  const links = [
+    {
+      label: "admin",
+      href: "/admin",
+      icon: (
+        <RiHome4Line className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Overview",
+      href: "/admin/overview",
+      icon: (
+        <TbBrandGoogleAnalytics className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Appearance",
+      href: "/admin/appearance",
+      icon: (
+        <LuShapes className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Settings",
+      href: "/admin/settings",
+      icon: (
+        <RiSettings2Line className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Logout",
+      href: "#",
+      icon: (
+        <TbLogout2 className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+  ];
+
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Sidebar open={open} setOpen={setOpen}>
+      <SidebarBody className="justify-between gap-10">
+        <div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+          <Image className="w-6 mt-6" src={logo} alt="" />
+          <div className="flex flex-col gap-2 mt-20">
+            <div className="flex flex-col gap-2 mt-8">
+              {links.map((link, idx) => (
+                <SidebarLink key={idx} link={link} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div>
+          <SidebarLink
+            link={{
+              label: userData?.username,
+              href: "#",
+              icon: (
+                <Avatar className="flex justify-center w-8 h-8 text-white capitalize">
+                  {userData?.username?.slice(0, 2)}
+                </Avatar>
+              ),
+            }}
+          />
+          <SidebarButton
+            onClick={() => logoutUser()}
+            button={{
+              label: " Logout",
+              icon: (
+                <TbLogout2 className="flex-shrink-0 w-6 h-6 text-neutral-700 dark:text-neutral-200" />
+              ),
+            }}
+          />
+        </div>
+      </SidebarBody>
+    </Sidebar>
+  );
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative w-8 h-8 rounded-full">
+          <Avatar className="w-8 h-8">
             <AvatarImage src={userData?.avatar?.url} alt={userData?.username} />
             <AvatarFallback className="uppercase">
               {" "}

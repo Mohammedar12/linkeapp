@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,23 @@ import AuthContext from "@/context/auth";
 import bg from "../../assets/login-bg.jpg";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function UserAuthForm({ className, ...props }) {
   const [isLoading, setIsLoading] = useState(false);
-  const { loginUser } = useContext(AuthContext);
-
+  const { loginUser, isAuthenticated, loginUserGoogle } =
+    useContext(AuthContext);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const redirectUrl = searchParams.get("redirect") || "/admin";
+      router.push(redirectUrl);
+    }
+  }, [isAuthenticated, router]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -56,6 +66,8 @@ export default function UserAuthForm({ className, ...props }) {
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
+              role="presentation"
+              autocomplete="off"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -69,9 +81,6 @@ export default function UserAuthForm({ className, ...props }) {
               >
                 Password *
               </label>
-              <a className="text-sm text-purple-600 hover:underline" href="#">
-                Forgot your password?
-              </a>
             </div>
             <Input
               id="password"
@@ -82,6 +91,12 @@ export default function UserAuthForm({ className, ...props }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <a
+              className="block text-sm text-right text-purple-600 hover:underline"
+              href="#"
+            >
+              Forgot your password?
+            </a>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -96,7 +111,7 @@ export default function UserAuthForm({ className, ...props }) {
           </div>
           <Button
             disabled={isLoading}
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white"
+            className="w-full text-white bg-purple-600 hover:bg-purple-500"
           >
             Log In
           </Button>
@@ -110,19 +125,20 @@ export default function UserAuthForm({ className, ...props }) {
             </a>
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
           </div>
-          <Button className="w-full bg-white  hover:bg-slate-400 hover:text-white text-gray-900 border border-gray-300 hover:border-slate-400">
+
+          <Button
+            type="button"
+            onClick={() => loginUserGoogle()}
+            className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400"
+          >
             <ChromeIcon className="w-4 h-4 mr-2 " />
-            Sign up with google
-          </Button>
-          <Button className="w-full bg-white hover:bg-slate-400 hover:text-white text-gray-900 border border-gray-300 hover:border-slate-400">
-            <AppleIcon className="w-4 h-4 mr-2 " />
-            Sign up with Apple
+            google
           </Button>
         </form>
         <div className="mt-6 text-sm text-center">
-          Don't have an account?
+          Don't have an account ?{" "}
           <a className="text-purple-600 hover:underline" href="/signup">
-            Register here
+            Create one !
           </a>
         </div>
       </div>

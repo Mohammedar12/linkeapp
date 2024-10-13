@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import AuthContext from "@/context/auth";
 import { cn } from "@/lib/utils";
+import ThemeSelector from "../ui/themeSelector";
+import { AstroPurple, CosmicCandy } from "../Themes/Themes";
+import AppearanceContext from "@/context/appearance";
 export default function Appearance(props) {
   const {
     prevStep,
@@ -17,13 +20,22 @@ export default function Appearance(props) {
     setProfileTitle,
     about,
     setAbout,
-    onAvatarChange,
-    avatar,
-    setAvatar,
     loading,
     genreate,
     className,
+    theme,
+    setTheme,
   } = props;
+
+  const { avatar } = useContext(AppearanceContext);
+  const themes = [CosmicCandy, AstroPurple];
+
+  useEffect(() => {
+    setTheme(CosmicCandy);
+  }, []);
+  useEffect(() => {
+    console.log(avatar);
+  }, [avatar]);
 
   return (
     <div
@@ -37,22 +49,6 @@ export default function Appearance(props) {
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
             Appearance
           </h1>
-          <div className="flex items-center space-x-2">
-            <Button
-              onClick={() => prevStep()}
-              className="bg-blue-500 hover:bg-blue-600 text-white"
-              variant="outline"
-            >
-              Previous
-            </Button>
-            <Button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white"
-              variant="outline"
-            >
-              Continue
-            </Button>
-          </div>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
           <div className="space-y-4">
@@ -65,20 +61,23 @@ export default function Appearance(props) {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage alt="@shadcn" src={avatar} />
+              <Avatar className="w-20 h-20">
+                <AvatarImage
+                  alt="@shadcn"
+                  src={avatar.preview ? avatar.preview : avatar.image}
+                />
                 <AvatarFallback>JP</AvatarFallback>
               </Avatar>
               <Label
                 htmlFor="file"
-                className="p-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white"
+                className="p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 variant="outline"
               >
                 <Input
                   id="file"
                   className="sr-only"
                   type="file"
-                  onChange={onAvatarChange}
+                  onChange={avatar.handleImageChange}
                 />
                 Upload Your Photo
               </Label>
@@ -88,13 +87,17 @@ export default function Appearance(props) {
           <div className="space-y-4">
             <div className="space-y-2">
               <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                Background Color
+                Theme
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Choose a new background color.
+                Choose Your Theme.
               </p>
             </div>
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-500 dark:bg-gray-700" />
+            <ThemeSelector
+              themes={themes}
+              currentTheme={theme}
+              setTheme={setTheme}
+            />
           </div>
         </div>
         <div className="space-y-4">
@@ -107,7 +110,7 @@ export default function Appearance(props) {
             </p>
           </div>
           <Input
-            className=" py-6 w-full dark:bg-slate-900 text-white"
+            className="w-full py-6 text-white dark:bg-slate-900"
             placeholder="Enter your  Profile Title..."
             onChange={(e) => setProfileTitle(e.target.value)}
             value={profileTitle}
@@ -123,21 +126,43 @@ export default function Appearance(props) {
             </p>
           </div>
 
-          <Textarea
-            className="min-h-[120px] dark:bg-slate-900 text-white"
-            placeholder={loading ? "loading8..." : "Enter your description..."}
-            onChange={(e) => setAbout(e.target.value)}
-            value={about}
-            disabled={loading ? true : false}
-          />
-          {about && (
-            <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white"
-              onClick={genreate}
-            >
-              Genreate
-            </Button>
-          )}
+          <div className="flex items-center justify-between bg-slate-900 ">
+            <Textarea
+              className="min-h-[120px] pt-4 resize-none bg-slate-900 text-white !border-none !outline-none focus:outline-none"
+              placeholder={
+                loading ? "loading8..." : "Enter your description..."
+              }
+              onChange={(e) => setAbout(e.target.value)}
+              value={about}
+              disabled={loading ? true : false}
+            />
+            {about && (
+              <Button
+                type="button"
+                className="text-white bg-blue-300 hover:bg-blue-600 me-4"
+                onClick={genreate}
+              >
+                Re-Genreate
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Button
+            onClick={() => prevStep()}
+            className="text-white bg-blue-500 hover:bg-blue-600"
+            variant="outline"
+          >
+            Previous
+          </Button>
+          <Button
+            type="submit"
+            className="text-white bg-blue-500 hover:bg-blue-600"
+            variant="outline"
+          >
+            Continue
+          </Button>
         </div>
       </form>
     </div>

@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import { Card } from "../ui/card";
 import Inputs from "../Inputs/Inputs";
 import { MdDeleteOutline, MdDragIndicator } from "react-icons/md";
@@ -18,73 +24,39 @@ export function Links({
   setItems,
   reorder,
 }) {
-  const [checked, setChecked] = useState(value?.display);
+  const [checked, setChecked] = useState(value?.display || false);
   const [disabled, setDisabled] = useState(!value?.title);
   const [header, setHeader] = useState(value?.title);
   const [title, setTitle] = useState(value?.title);
   const [URL, setURL] = useState(value?.url);
 
-  useEffect(() => {
-    setDisabled(header === "");
-    setDisabled(URL === "");
-  }, []);
-
-  const editHeader = async (title, id, display) => {
-    console.log(value);
+  const editLink = async (id, updates) => {
     try {
       const { data } = await axios.put(
-        `${process.env.base_url}/headers/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/links/${id}`,
         {
-          title,
-          display,
+          ...updates,
           index,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            token: process.env.TOKEN,
-          },
-          withCredentials: true,
-        }
-      );
-      setHeader(data.title);
-      setChecked(data?.display);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const editLink = async (url, id, title, display) => {
-    try {
-      const { data } = await axios.put(
-        `${process.env.base_url}/links/${id}`,
-        {
-          url: url,
-          title: title,
-          display,
-          index,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            token: process.env.TOKEN,
           },
           withCredentials: true,
         }
       );
 
-      setURL(data?.url);
-      setTitle(data?.title);
-      setChecked(data?.display);
+      console.log(data);
+
+      // Update local state based on server response
+      if (updates.url !== undefined) setURL(data.url);
+      if (updates.title !== undefined) setTitle(data.title);
+      if (updates.display !== undefined) setChecked(data.display);
     } catch (error) {
       console.log(error);
+      // Optionally, revert the local state change if the server update fails
+      if (updates.display !== undefined) setChecked(!updates.display);
     }
-  };
-
-  const handleSwitchChange = async (id) => {
-    const newChecked = !checked;
-    setChecked(newChecked);
-    await editHeader(header, id, newChecked);
   };
 
   const dragControls = useDragControls();
@@ -97,12 +69,13 @@ export function Links({
     setItems(order);
   }, [order]);
 
-  const updateItems = () => {
+  const updateItems = useCallback(() => {
     const updatedItems = items.map((item, idx) => ({ ...item, index: idx }));
     console.log(updatedItems);
     setItems(updatedItems);
     reorder(updatedItems);
-  };
+  }, [items, setItems, reorder]);
+
   return (
     <Reorder.Item
       value={value}
@@ -112,7 +85,7 @@ export function Links({
     >
       {type === "Header" ? (
         <Card
-          className={`dark:bg-secondary bg-background p-3 m-4 ${
+          className={`  bg-card  border-none text-black p-3 m-4 ${
             index === 0 ? "my-4 mb-14" : "my-14"
           } flex justify-between items-center`}
         >
@@ -123,43 +96,41 @@ export function Links({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Headline title"
-            blur={() => editLink("", value?._id, title)}
+            blur={() => editLink(value?._id, { title: title })}
             type={value?.type}
           />
           <div className="flex flex-col items-end justify-between gap-4">
             <div className="flex gap-3">
-              <Button className="text-white bg-transparent hover:bg-transparent">
-                <CiShare1 />
-              </Button>
               <Switch
+                onCheckedChange={(newCheckedValue) => {
+                  setChecked(newCheckedValue);
+                  editLink(value?._id, { display: newCheckedValue });
+                }}
                 checked={checked}
-                onChange={() => handleSwitchChange(id)}
-                disabled={disabled}
-                onClick={() => handleSwitchChange(id)}
               />
             </div>
             <Button
               onClick={() => remove(value?._id)}
-              className="text-white bg-transparent hover:bg-transparent"
+              className="text-black bg-transparent hover:bg-transparent"
             >
               <MdDeleteOutline />
             </Button>
           </div>
         </Card>
       ) : (
-        <Card className="flex items-center justify-between p-3 m-4 dark:bg-secondary bg-background ">
+        <Card className="flex items-center justify-between p-3 m-4 text-black border-none bg-card ">
           <MdDragIndicator className="cursor-grab" onPointerDown={startDrag} />
 
           <Inputs
             onChange={(e) => setTitle(e.target.value)}
-            blur={() => editLink(URL, value?._id, title)}
+            blur={() => editLink(value?._id, { URL: URL, title: title })}
             name={title}
             value={title}
             placeholder="Title"
           />
           <Inputs
             onChange={(e) => setURL(e.target.value)}
-            blur={() => editLink(URL, value?._id)}
+            blur={() => editLink(value?._id, { URL: URL })}
             name={URL}
             value={URL}
             placeholder="URL"
@@ -167,20 +138,17 @@ export function Links({
 
           <div className="flex flex-col items-end justify-between gap-4">
             <div className="flex gap-3">
-              <Button className="text-white bg-transparent hover:bg-transparent">
-                <CiShare1 />
-              </Button>
               <Switch
+                onCheckedChange={(newCheckedValue) => {
+                  setChecked(newCheckedValue);
+                  editLink(value?._id, { display: newCheckedValue });
+                }}
                 checked={checked}
-                onChange={handleSwitchChange}
-                disabled={disabled}
-                onClick={(e) => setChecked(!checked)}
-                // type={value?.type}
               />
             </div>
             <Button
               onClick={() => remove(value?._id)}
-              className="text-white bg-transparent hover:bg-transparent"
+              className="text-black bg-transparent hover:bg-transparent"
             >
               <MdDeleteOutline />
             </Button>

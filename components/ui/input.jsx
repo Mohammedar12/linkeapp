@@ -5,15 +5,15 @@ import { cn } from "@/lib/utils";
 const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
     <div className="w-full">
-      <label htmlFor="email">
+      <label htmlFor="input">
         <input
-          id="email"
+          id="input"
           type={type}
           className={cn(
             `peer flex h-9  rounded-sm outline-none  bg-transparent border-input  px-3 py-1
          text-sm  transition-colors  
           disabled:cursor-not-allowed 
-         disabled:opacity-50 text-black  dark:text-white `,
+         disabled:opacity-50 text-black    `,
             className
           )}
           ref={ref}

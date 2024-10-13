@@ -19,6 +19,7 @@ import SiteContext from "@/context/site";
 
 import IframeResizer from "@iframe-resizer/react";
 import axios from "axios";
+import { useParams } from "next/navigation";
 
 export default function DashboardPage() {
   const [url, setUrl] = useState("");
@@ -26,13 +27,12 @@ export default function DashboardPage() {
   const {
     items,
     setItems,
-    fetchData,
-    newHeader,
+    userSite,
     newLink,
     remove,
-    reorder,
-    userSite,
-    setUserSite,
+    iframReload,
+    setIframReload,
+    getSite,
   } = useContext(SiteContext);
 
   const placeholders = [
@@ -41,10 +41,12 @@ export default function DashboardPage() {
     "mysite.com !",
   ];
 
+  // const params = useParams();
+
   const updateBackend = useCallback(async (updatedItems) => {
     try {
       const response = await axios.put(
-        `${process.env.base_url}/sites/reorder`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/reorder`,
         {
           links: updatedItems.map((item, index) => ({
             id: item._id,
@@ -58,13 +60,13 @@ export default function DashboardPage() {
           withCredentials: true,
         }
       );
+      // handleRefresh();
       console.log("Order updated in backend", response.data);
-      // Update local state if necessary
-      // setItems(response.data.site.links);
     } catch (error) {
       console.error("Error updating order in backend", error);
     }
   }, []);
+
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (items.length > 0) {
@@ -76,26 +78,30 @@ export default function DashboardPage() {
   }, [items, updateBackend]);
 
   const handleReorder = (newOrder) => {
-    const updatedOrder = newOrder.map((item, index) => ({
-      ...item,
-      index: index,
-    }));
-    console.log(updatedOrder, "updatedOrder");
-    setItems(updatedOrder);
+    setItems(newOrder.map((item, index) => ({ ...item, index })));
   };
+
+  const params = useParams();
+
+  const handleRefresh = () => {
+    getSite(params.slug);
+  };
+
   return (
     <>
-      <Card className="col-span-4 ">
-        <CardHeader>
-          <CardTitle>Links</CardTitle>
-          <CardDescription>Add Some Links</CardDescription>
+      <Card className="col-span-4 border-none bg-secondary">
+        <CardHeader className="flex items-center ">
+          <CardTitle className="text-2xl font-normal">
+            Add Some Links{" "}
+          </CardTitle>
+          <Button onClick={() => getSite(userSite.slug)}>Reload</Button>
         </CardHeader>
 
-        <CardContent className="pl-2 min-w-[700px]">
-          <Card className="border-none m-4 px-8 py-5">
+        <CardContent className="pl-2 ">
+          <Card className="px-8 py-5 mx-auto my-4 bg-transparent border-none shadow-none ">
             <PlaceholdersAndVanishInput
               placeholders={placeholders}
-              className=" w-full border-b-2 border-primary rounded-none  text-xl text-secondary-foreground py-6 "
+              className="w-auto py-6 text-xl border-b-2 rounded-none bg-primary border-primary text-secondary-foreground"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onSubmit={() => {
@@ -108,28 +114,30 @@ export default function DashboardPage() {
               onClick={() => {
                 newLink("", "Header");
               }}
-              className="w-1/5 py-6 bg-primary text-primary-foreground my-3"
+              className="w-full py-6 my-3 bg-foreground text-primary-foreground"
             >
               <IoIosAdd /> Add Header
             </Button>
           </Card>
-
-          {items && (
-            <Reorder.Group axis="y" values={items} onReorder={handleReorder}>
-              {items?.map((item, i) => (
-                <Links
-                  key={item._id}
-                  value={item}
-                  type={item.type}
-                  index={item.index}
-                  remove={remove}
-                  items={items}
-                  setItems={setItems}
-                  reorder={updateBackend}
-                />
-              ))}
-            </Reorder.Group>
-          )}
+          <Card className="bg-transparent border-none shadow-none ">
+            {" "}
+            {items && (
+              <Reorder.Group axis="y" values={items} onReorder={handleReorder}>
+                {items?.map((item, i) => (
+                  <Links
+                    key={item._id}
+                    value={item}
+                    type={item.type}
+                    index={item.index}
+                    remove={remove}
+                    items={items}
+                    setItems={setItems}
+                    reorder={updateBackend}
+                  />
+                ))}
+              </Reorder.Group>
+            )}
+          </Card>
         </CardContent>
       </Card>
     </>

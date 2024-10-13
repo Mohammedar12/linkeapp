@@ -7,12 +7,15 @@ const useApiCall = () => {
 
   const fetchData = async (url) => {
     try {
-      const { data } = await axios.get(`${process.env.base_url}/${url}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/${url}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
       return data;
     } catch (error) {
       console.error(error);
@@ -22,7 +25,7 @@ const useApiCall = () => {
   const newHeader = async (header) => {
     try {
       const { data } = await axios.post(
-        `${process.env.base_url}/headers/new`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/headers/new`,
         {
           header: header,
         },
@@ -44,7 +47,7 @@ const useApiCall = () => {
   const newLink = async (url) => {
     try {
       const { data } = await axios.post(
-        `${process.env.base_url}/links/new`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/links/new`,
         {
           url: url,
         },
@@ -66,7 +69,7 @@ const useApiCall = () => {
   const remove = async (url, id) => {
     try {
       const { data } = await axios.delete(
-        `${process.env.base_url}/${url}/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/${url}/${id}`,
         {
           headers: {
             "Content-Type": "application/json",

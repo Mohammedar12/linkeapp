@@ -1,14 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import {
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  Card,
-} from "@/components/ui/card";
+import { debounce } from "lodash";
 import { Button } from "@/components/ui/button";
 import Gradient from "@/components/ui/gradient";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,18 +21,20 @@ import { Textarea } from "@/components/ui/textarea";
 import AppearanceContext from "@/context/appearance";
 import SiteContext from "@/context/site";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
-import AuthContext from "@/context/auth";
-import user1 from "@/assets/user1.jpg";
-import Skills from "@/components/Startup/skills";
-import PickColor from "@/components/ui/pickColor";
 
+import user1 from "@/assets/user1.jpg";
+
+import PickColor from "@/components/ui/pickColor";
+import { AstroPurple, CosmicCandy } from "@/components/Themes/Themes";
+import ThemeSelector from "@/components/ui/themeSelector";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent } from "@/components/ui/card";
+export const dynamic = "force-dynamic";
 export default function AppearancePage() {
-  const { createSite, userSite, updateSite, fetchData, setUserSite } =
-    useContext(SiteContext);
+  const { userSite, updateSite, loading, setLoading } = useContext(SiteContext);
   const {
     handleInputChange,
     convertValuesToPayload,
-    onAvatarChange,
     socials,
     platforms,
     initialSocialValues,
@@ -47,7 +42,8 @@ export default function AppearancePage() {
     setProfileTitle,
     about,
     setAbout,
-    loading,
+    setSlug,
+    slug,
     avatar,
     bgImage,
     skills,
@@ -63,6 +59,12 @@ export default function AppearancePage() {
   } = useContext(AppearanceContext);
 
   const [bgColor, setBgColor] = useState(theme?.bgColor || "#3B82F6");
+  const [linkBgColor, setLinkBgColor] = useState(
+    theme?.linkStyle?.bgColor || "#fff"
+  );
+  const [headerBgColor, setHeaderBgColor] = useState(
+    theme?.headerStyle?.bgColor || "#ffffff00"
+  );
   const [avatarBgColor, setAvatarBgColor] = useState(
     theme?.AvatarBgColor || userSite?.theme?.AvatarBgColor || "#000000"
   );
@@ -70,17 +72,14 @@ export default function AppearancePage() {
   const [isParticles, setIsParticles] = useState(theme?.isParticles || true);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     setTheme({
       ...theme,
       bgColor: bgColor,
       AvatarBgColor: avatarBgColor,
       isParticles,
+      linkStyle: { ...theme?.linkStyle, bgColor: linkBgColor },
     });
-  }, [bgColor, avatarBgColor, isParticles]);
+  }, [bgColor, avatarBgColor, isParticles, linkBgColor]);
 
   const [newSkill, setNewSkill] = useState("");
 
@@ -103,68 +102,98 @@ export default function AppearancePage() {
     setSkills(skills?.filter((skill) => skill !== skillToRemove));
   };
 
+  const themes = [CosmicCandy, AstroPurple];
+
   const submitHandler = (event) => {
-    event.preventDefault();
+    event.preventDefault(); // This is necessary for React synthetic events
+    setLoading(true);
+    debouncedHandler(event);
+  };
+
+  const debouncedHandler = debounce((event) => {
     const payload = convertValuesToPayload(socials);
+    console.log("working");
 
-    if (avatar && avatar.image) {
-      console.log("Avatar File:", avatar.image);
-    } else {
-      console.log("No avatar file provided or avatar.image is empty.");
-    }
-    if (bgImage && bgImage.image) {
-      console.log("bgImage File:", bgImage.image);
-    } else {
-      console.log("No bgImage file provided or bgImage.image is empty.");
-    }
-
+    let isReadyTheme = theme.isReadyTheme || false; // Add this flag to your theme object
+    let allThemesDifferent = true;
     const newProfile = {
       skills,
       title: profileTitle,
-      theme,
+      theme: {
+        ...theme,
+        isReadyTheme, // Include the flag in the theme object
+        bgImage: null, // We'll handle bgImage separately
+      },
       social: payload,
       about,
-      avatar: avatar.image,
-      bgImage: bgImage.image,
+      experience,
+      location,
+      avatar: null, // We'll handle avatar separately
     };
 
     const changedFields = _.omitBy(newProfile, (value, key) => {
       return _.isEqual(value, _.get(userSite, key));
     });
 
-    console.log("Changed Fields:", changedFields);
+    console.log("Changed Fields:", changedFields.theme);
 
     const formData = new FormData();
 
-    _.forOwn(changedFields, (value, key) => {
-      if (key === "theme") {
-        // Handle theme object separately
-        _.forOwn(value, (themeValue, themeKey) => {
-          if (themeKey === "bgImage" && themeValue instanceof File) {
-            formData.append("bgImage", themeValue, themeValue.name);
-          } else {
-            formData.append(`theme[${themeKey}]`, themeValue);
-          }
-        });
-      } else if (value instanceof File) {
-        formData.append(key, value, value.name);
-      } else if (_.isObject(value) && !(value instanceof File)) {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, value);
+    // Handle theme as a single JSON string
+
+    themes.forEach((theme) => {
+      const isEqual = _.isEqual(theme, changedFields.theme);
+      console.log(
+        `Theme: ${theme.themeName || "Unnamed"}, Is Equal: ${isEqual}`
+      );
+
+      if (isEqual) {
+        allThemesDifferent = false;
       }
     });
 
-    // Log the FormData content, including the file details
+    if (changedFields.theme) {
+      formData.append(
+        "theme",
+        JSON.stringify({
+          ...changedFields.theme,
+          bgImage: { ...theme.bgImage, url: bgImage.image },
+          isReadyTheme: !allThemesDifferent ? true : false, // Include the flag here as well
+        })
+      );
+    }
+
+    // Handle other fields
+    Object.entries(changedFields).forEach(([key, value]) => {
+      if (key !== "theme") {
+        if (_.isObject(value) && !(value instanceof File)) {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      }
+    });
+
+    // Handle file uploads separately
+    if (avatar && avatar.image instanceof File) {
+      formData.append("avatar", avatar.image, avatar.image.name);
+    }
+    if (bgImage && bgImage.image instanceof File) {
+      formData.append("bgImage", bgImage.image, bgImage.image.name);
+    }
+
+    // Log the FormData content
     for (let [key, value] of formData.entries()) {
       if (value instanceof File) {
         console.log(`${key}:`, value.name);
       } else {
-        console.log(`${key}: ${value}`);
+        console.log(`${key}:`, value);
       }
     }
+
     updateSite(formData);
-  };
+    setLoading(true);
+  }, 700);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -179,7 +208,7 @@ export default function AppearancePage() {
   };
 
   return (
-    <div className="w-full max-w-3xl col-span-4 p-8 mx-auto space-y-8 bg-white shadow-lg rounded-xl dark:bg-gray-800 sm:p-10 md:p-12 lg:p-14">
+    <div className="w-full max-w-3xl p-8 mx-auto space-y-8 shadow-lg bg-secondary rounded-xl sm:p-10 md:p-12 lg:p-14">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
           Appearance
@@ -189,11 +218,12 @@ export default function AppearancePage() {
         <Tabs defaultValue="account" className="space-y-6">
           <TabsList>
             <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="colors">Colors</TabsTrigger>
+            <TabsTrigger value="design">Design</TabsTrigger>
             <TabsTrigger value="themes">Themes</TabsTrigger>
+            <TabsTrigger value="socials">Socials</TabsTrigger>
           </TabsList>
           <TabsContent value="account" className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
+            <div className="flex flex-col gap-3">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
@@ -243,6 +273,22 @@ export default function AppearancePage() {
                   placeholder="Enter your  Profile Title..."
                   onChange={(e) => setProfileTitle(e.target.value)}
                   value={profileTitle}
+                />
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                    Page Slug <q>Username</q>
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Update your Page slug <q>Username</q>.
+                  </p>
+                </div>
+                <Input
+                  className="w-full py-6 text-white dark:bg-slate-900"
+                  placeholder="Enter your  Profile Title..."
+                  onChange={(e) => setSlug(e.target.value)}
+                  value={slug}
                 />
               </div>
             </div>
@@ -339,36 +385,21 @@ export default function AppearancePage() {
                 </p>
               </div>
               <Input
-                type="number"
+                type="text"
                 className="w-full py-6 text-white dark:bg-slate-900"
                 placeholder="Enter your  Profile Title..."
-                onChange={(e) => setExperience(e.target.value)}
-                value={experience}
+                onChange={(e) => setLocation(e.target.value)}
+                value={location}
               />
             </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                  Add Social Links
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Enter your social links.
-                </p>
-              </div>
 
-              <Social
-                values={socials}
-                platforms={platforms}
-                initialSocialValues={initialSocialValues}
-                handleInputChange={handleInputChange}
-                page="appearance"
-              />
-            </div>
             <div className="space-y-4 ">
-              <Button type="submit">Save</Button>
+              <Button disabled={loading ? true : false} type="submit">
+                Save
+              </Button>
             </div>
           </TabsContent>
-          <TabsContent value="colors">
+          <TabsContent value="design">
             <div className="font-medium"></div>
             <Accordion type="single" collapsible>
               <AccordionItem value="item-1">
@@ -408,7 +439,7 @@ export default function AppearancePage() {
                       {/* <Input type="file" /> */}
                     </div>
                   </div>
-                  <Tabs defaultValue={`gradient`} className="space-y-6">
+                  <Tabs defaultValue="gradient" className="space-y-6">
                     <TabsList className="mt-3">
                       <TabsTrigger
                         value="gradient"
@@ -422,11 +453,11 @@ export default function AppearancePage() {
                           setTheme({ ...theme, isGradient: false })
                         }
                       >
-                        color
+                        Flat Color
                       </TabsTrigger>
                     </TabsList>
                     <TabsContent value="gradient">
-                      <Gradient />
+                      <Gradient type="background" />
                     </TabsContent>
                     <TabsContent value="color">
                       <PickColor color={theme?.bgColor} setColor={setBgColor} />
@@ -447,6 +478,100 @@ export default function AppearancePage() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
+                <AccordionTrigger className="text-lg">Links</AccordionTrigger>
+                <AccordionContent className="px-4 ">
+                  <Tabs defaultValue="gradient" className="space-y-6">
+                    <TabsList className="mt-3">
+                      <TabsTrigger
+                        value="gradient"
+                        onClick={() =>
+                          setTheme({
+                            ...theme,
+                            linkStyle: {
+                              ...theme.linkStyle,
+                              isGradient: true,
+                            },
+                          })
+                        }
+                      >
+                        Gradient
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="color"
+                        onClick={() =>
+                          setTheme({
+                            ...theme,
+                            linkStyle: {
+                              ...theme.linkStyle,
+                              isGradient: false,
+                            },
+                          })
+                        }
+                      >
+                        Flat Color
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="gradient">
+                      <Gradient type="link" />
+                    </TabsContent>
+                    <TabsContent value="color">
+                      <PickColor
+                        color={linkBgColor}
+                        setColor={setLinkBgColor}
+                        IsGradient={false}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4">
+                <AccordionTrigger className="text-lg">Headers</AccordionTrigger>
+                <AccordionContent className="px-4 ">
+                  <Tabs defaultValue="gradient" className="space-y-6">
+                    <TabsList className="mt-3">
+                      <TabsTrigger
+                        value="gradient"
+                        onClick={() =>
+                          setTheme({
+                            ...theme,
+                            headerStyle: {
+                              ...theme.headerStyle,
+                              isGradient: true,
+                            },
+                          })
+                        }
+                      >
+                        Gradient
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="color"
+                        onClick={() =>
+                          setTheme({
+                            ...theme,
+                            headerStyle: {
+                              ...theme.headerStyle,
+                              isGradient: false,
+                            },
+                          })
+                        }
+                      >
+                        Flat Color
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="gradient">
+                      <Gradient type="header" />
+                    </TabsContent>
+                    <TabsContent value="color">
+                      <PickColor
+                        color={headerBgColor}
+                        setColor={setHeaderBgColor}
+                        IsGradient={false}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-5">
                 <AccordionTrigger className="text-lg">
                   {" "}
                   Particles
@@ -458,7 +583,46 @@ export default function AppearancePage() {
               </AccordionItem>
             </Accordion>
             <div className="space-y-4 ">
-              <Button type="submit">Save</Button>
+              <Button disabled={loading ? true : false} type="submit">
+                Save
+              </Button>
+            </div>
+          </TabsContent>
+          <TabsContent value="themes">
+            <ThemeSelector
+              themes={themes}
+              currentTheme={theme}
+              setTheme={setTheme}
+            />
+            <div className="space-y-4 ">
+              <Button disabled={loading ? true : false} type="submit">
+                Save
+              </Button>
+            </div>
+          </TabsContent>
+          <TabsContent value="socials">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                  Add Social Links
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Enter your social links.
+                </p>
+              </div>
+
+              <Social
+                values={socials}
+                platforms={platforms}
+                initialSocialValues={initialSocialValues}
+                handleInputChange={handleInputChange}
+                page="appearance"
+              />
+            </div>
+            <div className="space-y-4 ">
+              <Button disabled={loading ? true : false} type="submit">
+                Save
+              </Button>
             </div>
           </TabsContent>
         </Tabs>

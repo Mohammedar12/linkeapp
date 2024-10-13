@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 
 export function MainNav({ className, ...props }) {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 flex items-center h-16 gap-4 px-4 border-b bg-background md:px-6">
       <nav
         className={cn(
           "hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6",
@@ -18,26 +18,26 @@ export function MainNav({ className, ...props }) {
       >
         <Link
           href="/admin"
-          className=" font-medium transition-colors hover:text-primary"
+          className="font-medium transition-colors hover:text-primary"
         >
           Links
         </Link>
         <Link
           href="/admin/overview"
-          className=" font-medium transition-colors hover:text-primary"
+          className="font-medium transition-colors hover:text-primary"
         >
           Overview
         </Link>
 
         <Link
           href="/admin/appearance"
-          className=" font-medium transition-colors hover:text-primary"
+          className="font-medium transition-colors hover:text-primary"
         >
           Appearance
         </Link>
         <Link
           href="/admin/settings"
-          className=" font-medium text-muted-foreground transition-colors hover:text-primary"
+          className="font-medium transition-colors text-muted-foreground hover:text-primary"
         >
           Settings
         </Link>
@@ -45,7 +45,7 @@ export function MainNav({ className, ...props }) {
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-            <Menu className="h-5 w-5" />
+            <Menu className="w-5 h-5" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
@@ -59,26 +59,26 @@ export function MainNav({ className, ...props }) {
           >
             <Link
               href="/admin"
-              className=" font-medium transition-colors hover:text-primary"
+              className="font-medium transition-colors hover:text-primary"
             >
               Links
             </Link>
             <Link
               href="/admin/overview"
-              className=" font-medium transition-colors hover:text-primary"
+              className="font-medium transition-colors hover:text-primary"
             >
               Overview
             </Link>
 
             <Link
               href="/admin/appearance"
-              className=" font-medium transition-colors hover:text-primary"
+              className="font-medium transition-colors hover:text-primary"
             >
               Appearance
             </Link>
             <Link
               href="/admin/settings"
-              className=" font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="font-medium transition-colors text-muted-foreground hover:text-primary"
             >
               Settings
             </Link>
