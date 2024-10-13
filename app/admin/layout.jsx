@@ -9,6 +9,7 @@ import AuthContext from "@/context/auth";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Button as MuiBtn } from "@mui/material";
 import SiteContext from "@/context/site";
 import {
   Drawer,
@@ -20,6 +21,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { LuCopy, LuCopyCheck } from "react-icons/lu";
 
 export default function UserLayout({ children }) {
   const { userData, verify } = useContext(AuthContext);
@@ -28,6 +30,21 @@ export default function UserLayout({ children }) {
 
   const [alert, setAlert] = useState(false);
   const pathname = usePathname();
+
+  const [copyStatus, setCopyStatus] = useState(false);
+
+  const profileUrl = `${process.env.NEXT_PUBLIC_CLIENT_URL}/${userData?.username}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(profileUrl);
+      setCopyStatus(true);
+      setTimeout(() => setCopyStatus(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      setCopyStatus(false);
+    }
+  };
 
   useEffect(() => {
     if (verify) {
@@ -66,12 +83,7 @@ export default function UserLayout({ children }) {
   }
 
   const Iframe = () => {
-    return (
-      <iframe
-        className="w-full h-full rounded-md "
-        src={`${process.env.NEXT_PUBLIC_CLIENT_URL}/${userData?.username}`}
-      />
-    );
+    return <iframe className="w-full h-full rounded-md " src={profileUrl} />;
   };
 
   return (
@@ -87,21 +99,18 @@ export default function UserLayout({ children }) {
             {children}{" "}
             <Drawer>
               <DrawerTrigger asChild>
-                <Button
-                  className="block m-auto mt-5 xl:hidden bg-primary"
-                  variant="outline"
-                >
+                <Button className="block m-auto mt-5 xl:hidden bg-primary text-text">
                   Preview Site
                 </Button>
               </DrawerTrigger>
               <DrawerContent>
                 <div className="w-full max-w-sm mx-auto">
-                  <DrawerHeader>
-                    {/* <DrawerTitle>Move Goal</DrawerTitle> */}
-                  </DrawerHeader>
                   <div className="p-4 pb-0">
                     <div className="my-10">
-                      <div className=" h-[650px] ">{/* <Iframe /> */}</div>
+                      <div className=" h-[650px] ">
+                        {" "}
+                        <Iframe />{" "}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -111,13 +120,30 @@ export default function UserLayout({ children }) {
         </div>
 
         {/* Iframe container */}
-        <div className="items-center justify-center hidden w-1/3 xl:flex">
-          <div className=" w-[393px] xl:flex items-center justify-center">
-            <div className="w-[393px] h-[650px] pl-8">
-              <iframe
-                className="w-full h-full rounded-md "
-                src={`${process.env.NEXT_PUBLIC_CLIENT_URL}/${userData?.username}`}
-              />
+        <div className="flex-col items-center justify-center hidden w-1/3 xl:flex ">
+          <div className=" flex-col w-[380px] xl:flex items-center  justify-center">
+            <div className="w-[80%] flex justify-between items-center py-2 px-4  my-6 rounded-xl bg-secondary">
+              <MuiBtn
+                className="lowercase text-text"
+                target="_blank"
+                href={profileUrl}
+              >
+                {`${process.env.NEXT_PUBLIC_IFRAME_URL}/${userData?.username}`}
+              </MuiBtn>
+              <Button
+                type="button"
+                className={`${
+                  copyStatus
+                    ? "bg-foreground text-text-foreground "
+                    : "bg-background text-text "
+                }`}
+                onClick={handleCopy}
+              >
+                {copyStatus ? <LuCopyCheck /> : <LuCopy />}
+              </Button>
+            </div>
+            <div className="w-[380px] h-[650px]  ">
+              <iframe className="w-full h-full rounded-md " src={profileUrl} />
             </div>
           </div>
         </div>

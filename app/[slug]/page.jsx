@@ -23,28 +23,12 @@ import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import bnnar from "@/assets/9114923 1.png";
 import user1 from "../../assets/user1.jpg";
 import bgImage from "../../assets/bg-image3.jpg";
 
-import {
-  FaInstagram,
-  FaWhatsapp,
-  FaTelegram,
-  FaTwitter,
-  FaFacebook,
-  FaTiktok,
-} from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 import { SiYoutube } from "react-icons/si";
 import { RiTwitterXLine } from "react-icons/ri";
-import {
-  TypewriterEffect,
-  TypewriterEffectSmooth,
-} from "@/components/ui/typewriter-effect";
-
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Particles from "@/components/ui/particles";
 import WordRotate from "@/components/ui/word-rotate";
 import { TbMailFast } from "react-icons/tb";
@@ -95,13 +79,22 @@ function ListItem({ link, index, site }) {
   const isEven = index % 2 === 0;
   const xOffset = isEven ? 50 : -50;
 
-  const linkCount = site?.links?.filter((item) => item.type === "Link").length;
-  const prevElemnt = site?.links?.map((prev, i) => {
-    return site?.links[i - 1];
-  });
-  const nextElemnt = site?.links?.map((next, i) => {
-    return site?.links[i + 1]?.type;
-  });
+  const links = site?.links || [];
+
+  const getColumnSpan = () => {
+    const prevType = index > 0 ? links[index - 1]?.type : null;
+    const nextType = index < links.length - 1 ? links[index + 1]?.type : null;
+
+    if (links.length === 1) return "col-span-2";
+    if (link.type === "Link") {
+      if (prevType === "Header" && nextType === "Link") return "col-span-1";
+      if (prevType === "Link" && nextType === "Header") return "col-span-1";
+      if (prevType === "Header" && nextType === "Header") return "col-span-2";
+      if (prevType === "Header" && nextType === null) return "col-span-2";
+      return "col-span-1";
+    }
+    return "col-span-2";
+  };
 
   useEffect(() => {
     if (isInView) {
@@ -117,9 +110,9 @@ function ListItem({ link, index, site }) {
         { duration: 0.5 }
       );
     }
-    console.log(prevElemnt);
-    console.log(nextElemnt);
-  }, [isInView, animate, index]);
+  }, [isInView, animate, index, xOffset]);
+
+  const columnSpanClass = getColumnSpan();
 
   return (
     <>
@@ -127,9 +120,9 @@ function ListItem({ link, index, site }) {
         <motion.li
           ref={scope}
           className={`w-full
-            ${linkCount === 1 ? "col-span-2" : "col-span-1"}
+            ${columnSpanClass}
             rounded-xl   
-               border-pink-300 border-opacity-40`}
+            border-pink-300 border-opacity-40`}
           style={{
             background: site?.theme?.linkStyle?.isGradient
               ? `linear-gradient(${site?.theme?.linkStyle?.gradient?.dir}, ${site?.theme?.linkStyle?.gradient?.from}, ${site?.theme?.linkStyle?.gradient?.to})`
@@ -148,17 +141,10 @@ function ListItem({ link, index, site }) {
         <motion.li
           ref={scope}
           className={`w-full 
-           
-             
-              xs:col-span-1 
-                 col-span-2  my-3 !bg-transparent ${
-                   index !== 0 ? "border-b-4 border-t-4 " : "border-b-4 "
-                 } rounded-none border-pink-300 border-opacity-40`}
-          // style={{
-          //   background: site?.theme?.headerStyle?.isGradient
-          //     ? `linear-gradient(${site?.theme?.headerStyle?.gradient?.dir}, ${site?.theme?.headerStyle?.gradient?.from}, ${site?.theme?.headerStyle?.gradient?.to})`
-          //     : site?.theme?.headerStyle?.bgColor,
-          // }}
+            ${columnSpanClass}
+            my-3 !bg-transparent 
+            ${index !== 0 ? "border-b-4 border-t-4 " : "border-b-4 "}
+            rounded-none border-pink-300 border-opacity-40`}
         >
           <Button
             className="!text-white font-bold py-5 w-[100%] pointer-events-none"
@@ -171,32 +157,10 @@ function ListItem({ link, index, site }) {
     </>
   );
 }
-
 export default function UserSite() {
   const { site, setSite, getSite, loading, setLoading } =
     useContext(SiteContext);
   const params = useParams();
-
-  // const [site, setSite] = useState();
-  // const [loading, setLoading] = useState(true);
-
-  // const getSite = async () => {
-  //   try {
-  //     const { data } = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_BASE_URL}/sites/site/${params.slug}`,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     setSite(data);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     getSite(params.slug);
@@ -269,14 +233,9 @@ export default function UserSite() {
     </div>
   );
 
-  const handleRefresh = () => {
-    getSite(params.slug);
-  };
-
   return (
     <>
       <div className="relative w-full h-full min-h-screen overflow-hidden ">
-        <Button onClick={handleRefresh}>Reload </Button>
         <div className=" grid gap-4  grid-cols-none xl:grid-cols-2 xs:flex xs:flex-col px-5 justify-items-center items-center z-[1] ">
           <Card className="col-span-1 bg-transparent border-none shadow-none ">
             <CardContainer className="inter-var xs:w-full">
@@ -335,14 +294,9 @@ export default function UserSite() {
             <div className="max-w-[420px] text-center m-auto border-b-2 border-pink-300 pb-6 mb-6">
               {site?.about}
             </div>
-            <motion.ul
-              className={`grid  grid-cols-[repeat(2,minmax(180px,_250px))] xs:grid-cols-[repeat(1,minmax(150px,_1fr))]
-                 gap-4 p-4  `}
-            >
+            <motion.ul className="grid grid-cols-2 gap-4 p-4 xs:grid-cols-1">
               {site?.links?.map((link, i) => (
-                <>
-                  <ListItem key={link._id} link={link} index={i} site={site} />
-                </>
+                <ListItem key={link._id} link={link} index={i} site={site} />
               ))}
             </motion.ul>
           </div>
@@ -358,12 +312,12 @@ export default function UserSite() {
           />
         )}
         <div
-          className="absolute inset-0 opacity-50 -z-20 xs:w-full xs:h-full" // bg-gradient-to-r from-gray-900 to-black
+          className="absolute inset-0 opacity-50 -z-20 xs:w-full xs:h-full"
           style={{
             background: site?.theme?.isGradient
               ? `linear-gradient(${site?.theme?.gradient?.dir}, ${site?.theme?.gradient?.from}, ${site?.theme?.gradient?.to})`
               : site?.theme?.bgColor,
-          }} // background: `linear-gradient(${direction}, ${fromColor}, ${toColor})`,
+          }}
         />
         <div className="absolute inset-0 h-full -z-30 xs:h-full ">
           {site?.theme?.bgImage && (

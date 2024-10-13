@@ -55,7 +55,7 @@ export default function PickColor({ color, setColor, IsGradient }) {
     <div className="space-y-4">
       {!IsGradient && (
         <div
-          className="w-full h-40 border rounded-md"
+          className="w-full h-40 rounded-md"
           style={{ backgroundColor: color }}
         />
       )}
@@ -68,7 +68,7 @@ export default function PickColor({ color, setColor, IsGradient }) {
             type="color"
             value={color}
             onChange={(e) => setColor(e.target.value)}
-            className="w-full h-10 p-1 rounded-md"
+            className="w-full h-10 p-1 border-none rounded-md"
           />
           <Button size="icon" variant="outline" onClick={copyToClipboard}>
             {copied ? (
@@ -85,7 +85,7 @@ export default function PickColor({ color, setColor, IsGradient }) {
           {colorPresets.map((preset, i) => (
             <button
               key={i}
-              className="w-full h-6 border rounded-md"
+              className="w-full h-6 rounded-md"
               style={{ backgroundColor: preset }}
               onClick={() => setColor(preset)}
               type="button"

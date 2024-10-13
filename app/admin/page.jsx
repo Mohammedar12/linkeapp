@@ -94,7 +94,6 @@ export default function DashboardPage() {
           <CardTitle className="text-2xl font-normal">
             Add Some Links{" "}
           </CardTitle>
-          <Button onClick={() => getSite(userSite.slug)}>Reload</Button>
         </CardHeader>
 
         <CardContent className="pl-2 ">
