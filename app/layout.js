@@ -3,6 +3,7 @@ import "./globals.css";
 import { GlobalProvider } from "./GlobalProviders";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Suspense } from "react";
+import { Toaster, toast } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 GlobalProvider;
 export const metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({ children, ...props }) {
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </NextThemesProvider>
         </body>
       </GlobalProvider>

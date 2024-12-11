@@ -17,7 +17,7 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
 const inputStyle =
-  "flex dark:text-gray-400 rounded-md  items-center px-4 dark:bg-slate-900 w-full";
+  "flex text-secondary-foreground   px-4  items-center bg-input w-full";
 
 export default function Social(props) {
   const {
@@ -31,7 +31,7 @@ export default function Social(props) {
   } = props;
 
   return (
-    <Card className="w-full max-w-md dark:bg-gray-800">
+    <Card className="w-full max-w-md bg-transparent">
       {page !== "appearance" && (
         <CardHeader>
           <CardTitle>Add Social Links</CardTitle>
@@ -41,41 +41,40 @@ export default function Social(props) {
         </CardHeader>
       )}
 
-      <CardContent>
-        <div className="space-y-4 w-full">
-          {Object.keys(initialSocialValues).map((platform) => (
-            <div key={platform} className="grid grid-cols-1 gap-4">
-              <div className="grid grid-cols-[1fr_auto] items-center gap-2">
-                <div className="flex items-center gap-2">
-                  {platforms[platform].icon}
-                  <div className={inputStyle}>
-                    {platforms[platform].baseUrl}
-                    <Input
-                      onChange={handleInputChange}
-                      value={values[platform].username}
-                      name={platform}
-                      placeholder={`username`}
-                      className="ps-1 w-full"
-                    />
-                  </div>
+      <div className="w-full space-y-4">
+        {Object.keys(initialSocialValues).map((platform) => (
+          <div key={platform} className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+              <div className="flex items-center gap-2 px-4 rounded-md bg-input">
+                {platforms[platform].icon}
+                <div className={inputStyle}>
+                  {platforms[platform].baseUrl}
+                  <Input
+                    onChange={handleInputChange}
+                    value={values[platform].username}
+                    name={platform}
+                    placeholder={`username`}
+                    className="w-full ps-1"
+                  />
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
+          </div>
+        ))}
+      </div>
+
       {page !== "appearance" && (
         <CardFooter>
           <div className="flex items-center space-x-2">
             <Button
               onClick={() => prevStep()}
-              className="bg-blue-500 hover:bg-blue-600 text-white"
+              className="text-white bg-blue-500 hover:bg-blue-600"
               variant="outline"
             >
               Previous
             </Button>
             <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white"
+              className="text-white bg-blue-500 hover:bg-blue-600"
               variant="outline"
               onClick={() => nextStep()}
             >

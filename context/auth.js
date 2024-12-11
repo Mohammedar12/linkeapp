@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { createContext, useEffect, useState } from "react";
 import { setCookie, deleteCookie, getCookie } from "cookies-next";
 import { Toaster, toast } from "sonner";
@@ -17,39 +17,140 @@ const AuthContext = createContext();
 // AuthProvider component
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState();
   const [verify, setVerify] = useState(false);
   const [error, setError] = useState(null);
   const [isOk, setIsOk] = useState();
 
+  // const auth = useSearchParams().get("authenticated");
+
+  // useEffect(() => {
+  //   if (getDecodedCookie("authenticated") === true) {
+  //     getUser();
+  //   }
+  // }, []);
   useEffect(() => {
-    getUser();
-  }, []);
+    const authenticatedParam = searchParams.get("authenticated");
 
-  const getUser = async () => {
-    try {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/user`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
+    // Only run authentication logic if 'authenticated' parameter is present
+    if (authenticatedParam === "true") {
+      const checkAuthentication = async () => {
+        try {
+          const { data } = await axios.get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/user`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+
+          // Store user data in localStorage
+          localStorage.setItem("userdata", JSON.stringify(data));
+
+          // Set authenticated cookie
+          setEncodedCookie("authenticated", true);
+
+          // Remove the query parameter and navigate
+          router.replace("/admin", { scroll: false });
+
+          toast.success("authenticated");
+        } catch (error) {
+          toast.error(error?.response?.data?.message);
+          console.error(error);
+
+          // Redirect to login or handle authentication failure
+          router.replace("/login");
         }
-      );
+      };
 
-      localStorage.setItem("userdata", JSON.stringify(data));
-      setUserData(JSON.parse(localStorage.getItem("userdata")));
-      setVerify(userData?.isVerified);
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-      console.log(error);
+      checkAuthentication();
     }
-  };
+    if (getDecodedCookie("authenticated") === true) {
+      const checkExistingAuth = async () => {
+        try {
+          const { data } = await axios.get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/user`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+          localStorage.setItem("userdata", JSON.stringify(data));
+          setUserData(JSON.parse(localStorage.getItem("userdata")));
+          setVerify(userData?.isVerified);
+          setEncodedCookie("authenticated", true);
+        } catch (error) {
+          // If validation fails, clear authentication
+          console.error("Authentication validation failed");
+          setEncodedCookie("authenticated", false);
+          router.replace("/login");
+        }
+      };
+
+      checkExistingAuth();
+    }
+  }, [searchParams]); // Empty dependency array to run only once
+
+  // Optional: Additional authentication check
+  // useEffect(() => {
+  //   const checkExistingAuth = async () => {
+  //     if (getDecodedCookie("authenticated") === true) {
+  //       try {
+  //         const { data } = await axios.get(
+  //           `${process.env.NEXT_PUBLIC_BASE_URL}/user`,
+  //           {
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             withCredentials: true,
+  //           }
+  //         );
+  //         localStorage.setItem("userdata", JSON.stringify(data));
+  //         setUserData(JSON.parse(localStorage.getItem("userdata")));
+  //         setVerify(userData?.isVerified);
+  //         setEncodedCookie("authenticated", true);
+  //       } catch (error) {
+  //         // If validation fails, clear authentication
+  //         console.error("Authentication validation failed");
+  //         setEncodedCookie("authenticated", false);
+  //         router.replace("/login");
+  //       }
+  //     }
+  //   };
+
+  //   checkExistingAuth();
+  // }, []);
+  // const getUser = async () => {
+  //   try {
+  //     const { data } = await axios.get(
+  //       `${process.env.NEXT_PUBLIC_BASE_URL}/user`,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     router.replace("/admin", { scroll: false });
+  //     localStorage.setItem("userdata", JSON.stringify(data));
+  //     setUserData(JSON.parse(localStorage.getItem("userdata")));
+  //     setVerify(userData?.isVerified);
+  //     setEncodedCookie("authenticated", true);
+  //     toast.success("authenticated");
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message);
+  //     console.log(error);
+  //   }
+  // };
 
   // Register user
+
   const registerUser = async ({ username, email, password }) => {
     try {
       const { data } = await axios.post(
@@ -63,7 +164,7 @@ export const AuthProvider = ({ children }) => {
         }
       );
 
-      setEncodedCookie("authenticated", true);
+      setCookie("authenticated", true);
       getUser();
       setCookie("user", data?.token);
 
@@ -92,7 +193,7 @@ export const AuthProvider = ({ children }) => {
       );
 
       getUser();
-
+      setEncodedCookie("authenticated", true);
       router.push("/admin");
       toast.success("Logged in Successfully");
     } catch (err) {

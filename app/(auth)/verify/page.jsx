@@ -36,7 +36,6 @@ export default function Verify() {
 
   const { updateSite, sendVerifyToken, tokenSend, setTokenSent } =
     useContext(SiteContext);
-  // const { setIsAuthenticated, isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     if (

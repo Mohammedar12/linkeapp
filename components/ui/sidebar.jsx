@@ -3,7 +3,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import {
+  IconLayoutSidebarLeftExpand,
+  IconX,
+  IconArrowLeft,
+} from "@tabler/icons-react";
 
 const SidebarContext = createContext(undefined);
 
@@ -78,12 +82,12 @@ export const MobileSidebar = ({ className, children, ...props }) => {
     <>
       <div
         className={cn(
-          "h-10 px-4 z-[90] py-4 flex flex-row md:hidden  items-center justify-between  bg-secondary w-full"
+          "h-12 px-4 z-[90] py-4 flex flex-row md:hidden  items-center justify-between  bg-secondary w-full"
         )}
         {...props}
       >
-        <div className="flex justify-end w-full z-[90]">
-          <IconMenu2
+        <div className="flex justify-start py-4 w-full z-[90]">
+          <IconLayoutSidebarLeftExpand
             className="text-neutral-800 dark:text-neutral-200"
             onClick={() => setOpen(!open)}
           />
@@ -91,11 +95,11 @@ export const MobileSidebar = ({ className, children, ...props }) => {
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ y: "-100%", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: "-100%", opacity: 0 }}
+              initial={{ x: "-100%", width: "10%", opacity: 0.5 }}
+              animate={{ x: 0, width: "100%", opacity: 1 }}
+              exit={{ x: "-100%", width: "0", opacity: 0.5 }}
               transition={{
-                duration: 0.3,
+                duration: 0.4,
                 ease: "easeInOut",
               }}
               className={cn(
@@ -107,7 +111,7 @@ export const MobileSidebar = ({ className, children, ...props }) => {
                 className="absolute z-[90] right-10 top-10 text-neutral-800 dark:text-neutral-200"
                 onClick={() => setOpen(!open)}
               >
-                <IconX />
+                <IconArrowLeft />
               </div>
               {children}
             </motion.div>

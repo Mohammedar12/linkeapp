@@ -18,13 +18,6 @@ export default function ForgotPasswordForm({ className, ...props }) {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState();
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const redirectUrl = searchParams.get("redirect") || "/admin";
-  //     router.push(redirectUrl);
-  //   }
-  // }, [isAuthenticated, router]);
-
   async function onSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
@@ -59,7 +52,7 @@ export default function ForgotPasswordForm({ className, ...props }) {
               type="email"
               className="!text-white"
               role="presentation"
-              autocomplete="off"
+              autoComplete="off"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}

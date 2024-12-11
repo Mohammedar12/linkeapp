@@ -19,13 +19,6 @@ export default function ResetPasswordForm({ className, ...props }) {
   const [password, setPassword] = useState();
 
   const token = useSearchParams().get("token");
-  // useEffect(() => {
-  //   first;
-
-  //   return () => {
-  //     second;
-  //   };
-  // }, [third]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -58,7 +51,7 @@ export default function ResetPasswordForm({ className, ...props }) {
               type="password"
               className="!text-white"
               role="presentation"
-              autocomplete="off"
+              autoComplete="off"
               disabled={isLoading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

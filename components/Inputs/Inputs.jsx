@@ -23,7 +23,7 @@ export default function Inputs({ name, placeholder, blur, ...props }) {
          ${show ? " opacity-100 " : " opacity-0 pointer-events-none"}`}
       >
         <Input
-          className="w-full text-black"
+          className="w-full "
           tabIndex={show ? 0 : -1}
           onBlur={() => {
             setShow(false);
@@ -39,7 +39,7 @@ export default function Inputs({ name, placeholder, blur, ...props }) {
         ${show ? " hidden " : "inline-flex"}`}
       >
         <Button
-          className={`bg-transparent text-secondary-foreground hover:bg-opacity-1  hover:bg-card-foreground `}
+          className={`bg-transparent text-secondary-foreground    hover:bg-card-foreground/10 `}
           onClick={() => {
             setShow(true);
             input.current.focus();

@@ -47,10 +47,6 @@ export default function PickColor({ color, setColor, IsGradient }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  useEffect(() => {
-    console.log(color);
-  }, [color]);
-
   return (
     <div className="space-y-4">
       {!IsGradient && (

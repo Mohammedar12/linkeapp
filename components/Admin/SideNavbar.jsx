@@ -28,7 +28,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/icons/logo.svg";
 
-export function UserNav() {
+export function SideNavbar() {
   // getCookie("id");
   const { logoutUser, userData } = useContext(AuthContext);
 

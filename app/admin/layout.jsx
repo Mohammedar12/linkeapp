@@ -1,7 +1,7 @@
 "use client";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
-import { UserNav } from "@/components/Admin/user-nav";
+import { SideNavbar } from "@/components/Admin/SideNavbar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { useParams, usePathname } from "next/navigation";
@@ -25,6 +25,7 @@ import { LuCopy, LuCopyCheck } from "react-icons/lu";
 
 export default function UserLayout({ children }) {
   const { userData, verify } = useContext(AuthContext);
+  const { site } = useContext(SiteContext);
   const { sendVerifyToken, tokenSend, loading, iFrameReload, setIframReload } =
     useContext(SiteContext);
 
@@ -46,6 +47,8 @@ export default function UserLayout({ children }) {
     }
   };
 
+  const iframeRef = useRef(null);
+
   useEffect(() => {
     if (verify) {
       setAlert(true);
@@ -54,25 +57,19 @@ export default function UserLayout({ children }) {
     }
   }, []);
 
-  // Check if the current page is the settings page
   const isSettingsPage =
     pathname === "/admin/settings" || pathname === "/admin/overview";
 
   if (isSettingsPage) {
-    // If it's the settings page, render only the children without the layout UI
     return (
       <>
-        {" "}
-        <div className="flex-col md:flex">
-          <div className="border-b">
-            <div className="flex items-center h-16 px-4">
-              <div className="flex items-center ml-auto space-x-4">
-                {/* <Search /> */}
-                <UserNav />
-              </div>
-            </div>
+        <div className="flex flex-col h-screen md:flex-row">
+          <SideNavbar />
+
+          {/* Main content area */}
+          <div className="flex-1 ">
+            <div className="py-8 mx-4 mt-4 md:mx-auto">{children}</div>
           </div>
-          <div className="w-full ">{children}</div>
         </div>
       </>
     );
@@ -83,7 +80,14 @@ export default function UserLayout({ children }) {
   }
 
   const Iframe = () => {
-    return <iframe className="w-full h-full rounded-md " src={profileUrl} />;
+    return (
+      <iframe
+        id="previewIframe"
+        ref={iframeRef}
+        className="w-full h-full rounded-md "
+        src={profileUrl}
+      />
+    );
   };
 
   return (
@@ -91,11 +95,46 @@ export default function UserLayout({ children }) {
       <div className="flex flex-col h-screen md:flex-row">
         {/* Sidebar */}
 
-        <UserNav />
+        <SideNavbar />
 
         {/* Main content area */}
         <div className="flex-1 overflow-y-auto xl:mt-32 ">
           <div className="max-w-3xl py-8 mx-4 mt-4 md:mx-auto  md:w-[clamp(400px,80%,740px)]  ">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h1 className="flex-1 text-xl font-semibold">
+                Manage Your Links
+              </h1>
+              <div
+                className={`flex-1  flex justify-between items-center py-2 px-4  my-6 rounded-xl   duration-100 ${
+                  copyStatus
+                    ? "bg-card text-secondary-foreground/65  "
+                    : "bg-secondary/70 text-secondary-foreground "
+                }`}
+              >
+                <MuiBtn
+                  className="lowercase text-text"
+                  target="_blank"
+                  href={profileUrl}
+                >
+                  {`${process.env.NEXT_PUBLIC_IFRAME_URL}/${userData?.username}`}
+                </MuiBtn>
+                <Button
+                  type="button"
+                  className={` duration-500 ${
+                    copyStatus
+                      ? "bg-primary/40 text-secondary-foreground  hover:bg-primary/40  "
+                      : "bg-primary/90 text-secondary-foreground "
+                  }`}
+                  onClick={handleCopy}
+                >
+                  {copyStatus ? (
+                    <LuCopyCheck className="animate-pop" />
+                  ) : (
+                    <LuCopy />
+                  )}
+                </Button>
+              </div>
+            </div>
             {children}{" "}
             <Drawer>
               <DrawerTrigger asChild>
@@ -118,30 +157,10 @@ export default function UserLayout({ children }) {
             </Drawer>
           </div>
         </div>
-
         {/* Iframe container */}
-        <div className="flex-col items-center justify-center hidden w-1/3 xl:flex ">
+        <div className="items-center justify-center hidden w-1/3 gap-10 xl:flex">
+          <div className="w-0.5 h-full bg-foreground/50 hidden xl:flex" />
           <div className=" flex-col w-[380px] xl:flex items-center  justify-center">
-            <div className="w-[80%] flex justify-between items-center py-2 px-4  my-6 rounded-xl bg-secondary">
-              <MuiBtn
-                className="lowercase text-text"
-                target="_blank"
-                href={profileUrl}
-              >
-                {`${process.env.NEXT_PUBLIC_IFRAME_URL}/${userData?.username}`}
-              </MuiBtn>
-              <Button
-                type="button"
-                className={`${
-                  copyStatus
-                    ? "bg-foreground text-text-foreground "
-                    : "bg-background text-text "
-                }`}
-                onClick={handleCopy}
-              >
-                {copyStatus ? <LuCopyCheck /> : <LuCopy />}
-              </Button>
-            </div>
             <div className="w-[380px] h-[650px]  ">
               <iframe className="w-full h-full rounded-md " src={profileUrl} />
             </div>

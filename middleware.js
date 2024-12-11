@@ -24,8 +24,6 @@ export function middleware(request) {
 
   const isVerified = request.cookies.get("isVerified")?.value;
 
-  console.log("Decoded :", registerSteps);
-  console.log("Decoded :", registerSteps?.value);
   if (registerSteps === "false") {
     console.log(" the registerSteps === false");
   } else if (registerSteps === "true") {
@@ -78,6 +76,7 @@ export function middleware(request) {
         return NextResponse.redirect(new URL("/admin", request.url));
       }
       // Otherwise, allow them to proceed to their intended destination
+
       return NextResponse.next();
     }
   }

@@ -60,7 +60,7 @@ export default function UserAuthForm({ className, ...props }) {
               id="username"
               placeholder="Enter your username"
               type="text"
-              autocomplete="false"
+              autoComplete="false"
               name="hidden"
               className="!text-white"
               disabled={isLoading}
@@ -80,7 +80,7 @@ export default function UserAuthForm({ className, ...props }) {
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
-              autocomplete="false"
+              autoComplete="false"
               name="hidden"
               disabled={isLoading}
               value={email}
