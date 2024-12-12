@@ -15,8 +15,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import _ from "lodash";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/Label";
+import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import AppearanceContext from "@/context/appearance";
 import SiteContext from "@/context/site";
