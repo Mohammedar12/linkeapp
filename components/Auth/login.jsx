@@ -51,7 +51,7 @@ export default function UserAuthForm({ className, ...props }) {
           <h1 className="text-3xl font-bold text-center">Welcome back!</h1>
         </div>
         <form onSubmit={onSubmit} className="space-y-6">
-          <div className="space-y-1 border-b-2 border-secondary-foreground/50">
+          <div className="space-y-1 ">
             <label
               className="block text-sm font-medium text-slate-400"
               htmlFor="email"
@@ -70,7 +70,7 @@ export default function UserAuthForm({ className, ...props }) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="space-y-1 border-b-2 border-secondary-foreground/50">
+          <div className="space-y-1 ">
             <div className="flex justify-between">
               <label
                 className="block text-sm font-medium text-slate-400"
@@ -126,9 +126,9 @@ export default function UserAuthForm({ className, ...props }) {
         </form>
         <div className="mt-6 text-sm text-center">
           Don't have an account ?{" "}
-          <a className="text-purple-600 " href="/signup">
-            <span className="text-primary">Create one !</span>
-          </a>
+          <Link className="!text-primary hover:underline" href="/signup">
+            Create one !
+          </Link>
         </div>
       </div>
     </div>

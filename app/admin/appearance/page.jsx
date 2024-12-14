@@ -215,26 +215,6 @@ export default function AppearancePage() {
           Appearance
         </h1>
       </div>
-      <div className="flex bg-white">
-        <div className="size-6 bg-background" />
-        <div className="size-6 bg-foreground" />
-        <div className="size-6 bg-input" />
-        <div className="size-6 bg-popover" />
-        <div className="size-6 bg-popover-foreground" />
-        <div className="size-6 bg-primary" />
-        <div className="size-6 bg-primary-foreground" />
-        <div className="size-6 bg-secondary" />
-        <div className="size-6 bg-secondary-foreground" />
-        <div className="size-6 bg-muted" />
-        <div className="size-6 bg-muted-foreground" />
-        <div className="size-6 bg-accent" />
-        <div className="size-6 bg-accent-foreground" />
-        <div className="size-6 bg-destructive" />
-        <div className="size-6 bg-destructive-foreground" />
-        <div className="size-6 bg-border" />
-        <div className="size-6 bg-input" />
-        <div className="size-6 bg-ring" />
-      </div>
       <form onSubmit={submitHandler}>
         <Tabs defaultValue="account" className="space-y-6">
           <TabsList>
@@ -280,37 +260,39 @@ export default function AppearancePage() {
                   {/* <Input type="file" /> */}
                 </div>
               </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-medium text-secondary-foreground">
-                    Profile Title
-                  </h2>
-                  <p className="text-sm text-secondary-foreground/70">
-                    Update your Profile Title.
-                  </p>
+              <div className="flex justify-between gap-4">
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-medium text-secondary-foreground">
+                      Profile Title
+                    </h2>
+                    <p className="text-sm text-secondary-foreground/70">
+                      Update your Profile Title.
+                    </p>
+                  </div>
+                  <Input
+                    className="w-full py-6 text-secondary-foreground bg-input"
+                    placeholder="Enter your  Profile Title..."
+                    onChange={(e) => setProfileTitle(e.target.value)}
+                    value={profileTitle}
+                  />
                 </div>
-                <Input
-                  className="w-full py-6 text-secondary-foreground bg-input"
-                  placeholder="Enter your  Profile Title..."
-                  onChange={(e) => setProfileTitle(e.target.value)}
-                  value={profileTitle}
-                />
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-medium text-secondary-foreground">
-                    Page Slug <q>Username</q>
-                  </h2>
-                  <p className="text-sm text-secondary-foreground/70">
-                    Update your Page slug <q>Username</q>.
-                  </p>
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-medium text-secondary-foreground">
+                      Page Slug <q>Username</q>
+                    </h2>
+                    <p className="text-sm text-secondary-foreground/70">
+                      Update your Page slug <q>Username</q>.
+                    </p>
+                  </div>
+                  <Input
+                    className="w-full py-6 text-secondary-foreground bg-input"
+                    placeholder="Enter your  Profile Title..."
+                    onChange={(e) => setSlug(e.target.value)}
+                    value={slug}
+                  />
                 </div>
-                <Input
-                  className="w-full py-6 text-secondary-foreground bg-input"
-                  placeholder="Enter your  Profile Title..."
-                  onChange={(e) => setSlug(e.target.value)}
-                  value={slug}
-                />
               </div>
             </div>
 
@@ -379,39 +361,41 @@ export default function AppearancePage() {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium text-secondary-foreground">
-                  Experience
-                </h2>
-                <p className="text-sm text-secondary-foreground/70">
-                  Add your experience years.
-                </p>
+            <div className="flex justify-between gap-3">
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-secondary-foreground">
+                    Experience
+                  </h2>
+                  <p className="text-sm text-secondary-foreground/70">
+                    Add your experience years.
+                  </p>
+                </div>
+                <Input
+                  type="number"
+                  className="w-full py-6 text-secondary-foreground bg-input"
+                  placeholder="Enter your  Profile Title..."
+                  onChange={(e) => setExperience(e.target.value)}
+                  value={experience}
+                />
               </div>
-              <Input
-                type="number"
-                className="w-full py-6 text-secondary-foreground bg-input"
-                placeholder="Enter your  Profile Title..."
-                onChange={(e) => setExperience(e.target.value)}
-                value={experience}
-              />
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium text-secondary-foreground">
-                  Location
-                </h2>
-                <p className="text-sm text-secondary-foreground/70">
-                  Add your location if you want.
-                </p>
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-secondary-foreground">
+                    Location
+                  </h2>
+                  <p className="text-sm text-secondary-foreground/70">
+                    Add your location if you want.
+                  </p>
+                </div>
+                <Input
+                  type="text"
+                  className="w-full py-6 text-secondary-foreground bg-input"
+                  placeholder="Enter your  Profile Title..."
+                  onChange={(e) => setLocation(e.target.value)}
+                  value={location}
+                />
               </div>
-              <Input
-                type="text"
-                className="w-full py-6 text-secondary-foreground bg-input"
-                placeholder="Enter your  Profile Title..."
-                onChange={(e) => setLocation(e.target.value)}
-                value={location}
-              />
             </div>
 
             <div className="space-y-4 ">
