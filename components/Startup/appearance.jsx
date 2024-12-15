@@ -5,8 +5,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
+import { cnInput } from "@/components/ui/input";
+import { cnLabel } from "@/components/ui/label";
 import AuthContext from "@/context/auth";
 import { cn } from "@/lib/utils";
 import ThemeSelector from "../ui/themeSelector";
@@ -68,19 +68,19 @@ export default function Appearance(props) {
                 />
                 <AvatarFallback>JP</AvatarFallback>
               </Avatar>
-              <Label
+              <cnLabel
                 htmlFor="file"
                 className="p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 variant="outline"
               >
-                <Input
+                <cnInput
                   id="file"
                   className="sr-only"
                   type="file"
                   onChange={avatar.handleImageChange}
                 />
                 Upload Your Photo
-              </Label>
+              </cnLabel>
               {/* <Input type="file" /> */}
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function Appearance(props) {
               Update your Profile Title.
             </p>
           </div>
-          <Input
+          <cnInput
             className="w-full py-6 text-white dark:bg-slate-900"
             placeholder="Enter your  Profile Title..."
             onChange={(e) => setProfileTitle(e.target.value)}

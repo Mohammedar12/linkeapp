@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import { Input } from "@/components/ui/input";
+import { cnInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -45,7 +45,7 @@ export default function ResetPasswordForm({ className, ...props }) {
             >
               Password *
             </label>
-            <Input
+            <cnInput
               id="password"
               placeholder="Enter your mail address"
               type="password"

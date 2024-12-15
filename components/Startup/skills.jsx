@@ -9,7 +9,7 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/Input";
+import { cnInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import AppearanceContext from "@/context/appearance";
@@ -53,7 +53,7 @@ export default function Skills(props) {
       <CardContent className="flex flex-col gap-4">
         {skills?.length !== 3 && (
           <form onSubmit={addSkill} className="flex items-center gap-4">
-            <Input
+            <cnInput
               placeholder="Skills"
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}

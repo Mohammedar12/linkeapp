@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Input = React.forwardRef(({ className, type, ...props }, ref) => {
+const cnInput = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
     <div className="w-full">
       <label htmlFor="input">
@@ -23,6 +23,6 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
     </div>
   );
 });
-Input.displayName = "Input";
+cnInput.displayName = "Input";
 
-export { Input };
+export { cnInput };

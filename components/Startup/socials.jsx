@@ -11,7 +11,7 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/Input";
+import { cnInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
@@ -49,7 +49,7 @@ export default function Social(props) {
                 {platforms[platform].icon}
                 <div className={inputStyle}>
                   {platforms[platform].baseUrl}
-                  <Input
+                  <cnInput
                     onChange={handleInputChange}
                     value={values[platform].username}
                     name={platform}

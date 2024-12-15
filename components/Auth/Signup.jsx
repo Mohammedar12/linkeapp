@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext } from "react";
-import { Input } from "@/components/ui/input";
+import { cnInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -57,7 +57,7 @@ export default function UserAuthForm({ className, ...props }) {
             >
               Username *
             </label>
-            <Input
+            <cnInput
               id="username"
               placeholder="Enter your username"
               type="text"
@@ -76,7 +76,7 @@ export default function UserAuthForm({ className, ...props }) {
             >
               Email *
             </label>
-            <Input
+            <cnInput
               id="email"
               placeholder="Enter your mail address"
               type="email"
@@ -97,7 +97,7 @@ export default function UserAuthForm({ className, ...props }) {
                 Password *
               </label>
             </div>
-            <Input
+            <cnInput
               id="password"
               className="text-white"
               placeholder="Enter password"

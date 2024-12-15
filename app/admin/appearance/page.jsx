@@ -15,8 +15,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import _ from "lodash";
-import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
+import { cnLabel } from "@/components/ui/label";
+import { cnInput } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AppearanceContext from "@/context/appearance";
 import SiteContext from "@/context/site";
@@ -244,19 +244,19 @@ export default function AppearancePage() {
                     />
                     <AvatarFallback className="bg-input">JP</AvatarFallback>
                   </Avatar>
-                  <Label
+                  <cnLabel
                     htmlFor="file"
                     className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                     variant="outline"
                   >
-                    <Input
+                    <CnInput
                       id="file"
                       className="sr-only"
                       type="file"
                       onChange={avatar.handleImageChange}
                     />
                     Upload Your Photo
-                  </Label>
+                  </cnLabel>
                   {/* <Input type="file" /> */}
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function AppearancePage() {
                       Update your Profile Title.
                     </p>
                   </div>
-                  <Input
+                  <cnInput
                     className="w-full py-6 text-secondary-foreground bg-input"
                     placeholder="Enter your  Profile Title..."
                     onChange={(e) => setProfileTitle(e.target.value)}
@@ -286,7 +286,7 @@ export default function AppearancePage() {
                       Update your Page slug <q>Username</q>.
                     </p>
                   </div>
-                  <Input
+                  <cnInput
                     className="w-full py-6 text-secondary-foreground bg-input"
                     placeholder="Enter your  Profile Title..."
                     onChange={(e) => setSlug(e.target.value)}
@@ -331,7 +331,7 @@ export default function AppearancePage() {
                 <div className="flex items-center flex-1 gap-4 bg-input">
                   {skills?.length !== 3 && (
                     <>
-                      <Input
+                      <cnInput
                         className="py-6 text-secondary-foreground"
                         placeholder="Skills"
                         value={newSkill}
@@ -371,7 +371,7 @@ export default function AppearancePage() {
                     Add your experience years.
                   </p>
                 </div>
-                <Input
+                <cnInput
                   type="number"
                   className="w-full py-6 text-secondary-foreground bg-input"
                   placeholder="Enter your  Profile Title..."
@@ -388,7 +388,7 @@ export default function AppearancePage() {
                     Add your location if you want.
                   </p>
                 </div>
-                <Input
+                <cnInput
                   type="text"
                   className="w-full py-6 text-secondary-foreground bg-input"
                   placeholder="Enter your  Profile Title..."
@@ -426,19 +426,19 @@ export default function AppearancePage() {
                         />
                         <AvatarFallback>JP</AvatarFallback>
                       </Avatar>
-                      <Label
+                      <cnLabel
                         htmlFor="file"
                         className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                         variant="outline"
                       >
-                        <Input
+                        <cnInput
                           id="file"
                           className="sr-only"
                           type="file"
                           onChange={bgImage.handleImageChange}
                         />
                         Upload
-                      </Label>
+                      </cnLabel>
                       {/* <Input type="file" /> */}
                     </div>
                   </div>
