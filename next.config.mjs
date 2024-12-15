@@ -10,9 +10,6 @@ const nextConfig = {
     NEXT_PUBLIC_CLIENT_URL: "http://165.227.119.249:3000",
     NEXT_PUBLIC_IFRAME_URL: "165.227.119.249:3000",
   },
-  experimental: {
-    cpus: 1,
-  },
 };
 
 export default nextConfig;
