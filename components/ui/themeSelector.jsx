@@ -18,8 +18,8 @@ const ThemeButton = ({ theme, currentTheme, setTheme }) => {
         style={{
           background: getGradientStyle(theme),
         }}
-        className={`flex flex-col items-center justify-center h-20 gap-1 rounded-md w-14
-          ${isSelected ? "border-[3px] border-white" : ""}`}
+        className={`flex flex-col  items-center justify-center h-20 gap-1 rounded-md w-14
+          ${isSelected ? "!border-[3px] !border-white" : ""}`}
       >
         {[1, 2, 3].map((_, index) => (
           <span

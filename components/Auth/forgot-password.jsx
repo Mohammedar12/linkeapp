@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import { Input } from "@/components/ui/Input";
+import { ShInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -17,13 +17,6 @@ export default function ForgotPasswordForm({ className, ...props }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState();
-
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     const redirectUrl = searchParams.get("redirect") || "/admin";
-  //     router.push(redirectUrl);
-  //   }
-  // }, [isAuthenticated, router]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -53,13 +46,13 @@ export default function ForgotPasswordForm({ className, ...props }) {
             >
               Email *
             </label>
-            <Input
+            <ShInput
               id="email"
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
               role="presentation"
-              autocomplete="off"
+              autoComplete="off"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}

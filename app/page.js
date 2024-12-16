@@ -22,12 +22,17 @@ const Home = () => {
           name="description"
           content="Nextly is a free landing page template built with next.js & Tailwind CSS"
         />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Navbar />
       <Hero />
-      <SectionTitle
+
+      {/* <SectionTitle
         pretitle="Nextly Benefits"
         title=" Why should you use this landing page"
       >
@@ -60,7 +65,7 @@ const Home = () => {
       </SectionTitle>
       <Faq />
       <Cta />
-      <Footer />
+      <Footer /> */}
       {/* <PopupWidget /> */}
     </>
   );

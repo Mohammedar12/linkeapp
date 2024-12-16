@@ -50,6 +50,8 @@ export const AppearanceProvider = ({ children }) => {
     setAbout(userSite?.about);
 
     setSkills(userSite?.skills || []);
+    setLocation(userSite?.location);
+    setExperience(userSite?.experience);
 
     avatar.updateImage(userSite?.avatar?.url);
 

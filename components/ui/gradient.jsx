@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useContext } from "react";
 import AppearanceContext from "@/context/appearance";
 import { useEffect } from "react";
-import { Input } from "./Input";
+import { ShInput } from "./input";
 import PickColor from "./pickColor";
 
 const gradientDirections = [
@@ -103,10 +103,10 @@ export default function Gradient({ type }) {
   }, [gradients, type]);
 
   return (
-    <div className="w-full max-w-4xl p-6 mx-auto rounded-lg shadow-lg bg-slate-700">
+    <div className="w-full max-w-4xl p-6 mx-auto ">
       <div className="flex gap-4">
-        <Tabs defaultValue="from" className="relative w-full">
-          <TabsList className="flex justify-between w-full">
+        <Tabs defaultValue="from" className="relative w-full ">
+          <TabsList className="flex py-6 justify-between w-full border-b-[3px] rounded-none border-secondary-foreground/50">
             <TabsTrigger value="from">From Color</TabsTrigger>
             <TabsTrigger value="to">To Color</TabsTrigger>
           </TabsList>

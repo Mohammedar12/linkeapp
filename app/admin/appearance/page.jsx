@@ -15,8 +15,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import _ from "lodash";
-import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
+import { cnLabel } from "@/components/ui/label";
+import { ShInput } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AppearanceContext from "@/context/appearance";
 import SiteContext from "@/context/site";
@@ -124,6 +124,7 @@ export default function AppearancePage() {
         isReadyTheme, // Include the flag in the theme object
         bgImage: null, // We'll handle bgImage separately
       },
+      slug: slug,
       social: payload,
       about,
       experience,
@@ -192,7 +193,7 @@ export default function AppearancePage() {
     }
 
     updateSite(formData);
-    setLoading(true);
+    setLoading(false);
   }, 700);
 
   const handleKeyDown = (e) => {
@@ -210,7 +211,7 @@ export default function AppearancePage() {
   return (
     <div className="w-full max-w-3xl p-8 mx-auto space-y-8 shadow-lg bg-secondary rounded-xl sm:p-10 md:p-12 lg:p-14">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+        <h1 className="text-2xl font-bold tracking-tight text-secondary-foreground">
           Appearance
         </h1>
       </div>
@@ -226,10 +227,10 @@ export default function AppearancePage() {
             <div className="flex flex-col gap-3">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                  <h2 className="text-lg font-medium text-secondary-foreground">
                     Profile Picture
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-secondary-foreground">
                     Update your profile picture.
                   </p>
                 </div>
@@ -241,70 +242,72 @@ export default function AppearancePage() {
                         avatar.preview ? avatar.preview : avatar.image || user1
                       }
                     />
-                    <AvatarFallback>JP</AvatarFallback>
+                    <AvatarFallback className="bg-input">JP</AvatarFallback>
                   </Avatar>
-                  <Label
+                  <cnLabel
                     htmlFor="file"
-                    className="p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                    className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                     variant="outline"
                   >
-                    <Input
+                    <CnInput
                       id="file"
                       className="sr-only"
                       type="file"
                       onChange={avatar.handleImageChange}
                     />
                     Upload Your Photo
-                  </Label>
+                  </cnLabel>
                   {/* <Input type="file" /> */}
                 </div>
               </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                    Profile Title
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Update your Profile Title.
-                  </p>
+              <div className="flex justify-between gap-4">
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-medium text-secondary-foreground">
+                      Profile Title
+                    </h2>
+                    <p className="text-sm text-secondary-foreground/70">
+                      Update your Profile Title.
+                    </p>
+                  </div>
+                  <ShInput
+                    className="w-full py-6 text-secondary-foreground bg-input"
+                    placeholder="Enter your  Profile Title..."
+                    onChange={(e) => setProfileTitle(e.target.value)}
+                    value={profileTitle}
+                  />
                 </div>
-                <Input
-                  className="w-full py-6 text-white dark:bg-slate-900"
-                  placeholder="Enter your  Profile Title..."
-                  onChange={(e) => setProfileTitle(e.target.value)}
-                  value={profileTitle}
-                />
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                    Page Slug <q>Username</q>
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Update your Page slug <q>Username</q>.
-                  </p>
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-medium text-secondary-foreground">
+                      Page Slug <q>Username</q>
+                    </h2>
+                    <p className="text-sm text-secondary-foreground/70">
+                      Update your Page slug <q>Username</q>.
+                    </p>
+                  </div>
+                  <ShInput
+                    className="w-full py-6 text-secondary-foreground bg-input"
+                    placeholder="Enter your  Profile Title..."
+                    onChange={(e) => setSlug(e.target.value)}
+                    value={slug}
+                  />
                 </div>
-                <Input
-                  className="w-full py-6 text-white dark:bg-slate-900"
-                  placeholder="Enter your  Profile Title..."
-                  onChange={(e) => setSlug(e.target.value)}
-                  value={slug}
-                />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                <h2 className="text-lg font-medium text-secondary-foreground">
                   Description
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-secondary-foreground/70">
                   Update your profile description.
                 </p>
               </div>
 
               <Textarea
-                className="min-h-[120px] dark:bg-slate-900 text-white"
+                className="min-h-[120px] bg-input text-secondary-foreground"
                 placeholder={
                   loading ? "loading8..." : "Enter your description..."
                 }
@@ -316,20 +319,20 @@ export default function AppearancePage() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                <h2 className="text-lg font-medium text-secondary-foreground">
                   Add Your Skills
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-secondary-foreground/70">
                   Enter 1-3 Skills.
                 </p>
               </div>
 
               <div className="flex items-center w-full gap-4">
-                <div className="flex items-center flex-1 gap-4 dark:bg-slate-900">
+                <div className="flex items-center flex-1 gap-4 bg-input">
                   {skills?.length !== 3 && (
                     <>
-                      <Input
-                        className="py-6 dark:bg-slate-900"
+                      <ShInput
+                        className="py-6 text-secondary-foreground"
                         placeholder="Skills"
                         value={newSkill}
                         onChange={(e) => setNewSkill(e.target.value)}
@@ -358,48 +361,48 @@ export default function AppearancePage() {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                  Experience
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Add your experience years.
-                </p>
+            <div className="flex justify-between gap-3">
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-secondary-foreground">
+                    Experience
+                  </h2>
+                  <p className="text-sm text-secondary-foreground/70">
+                    Add your experience years.
+                  </p>
+                </div>
+                <ShInput
+                  type="number"
+                  className="w-full py-6 text-secondary-foreground bg-input"
+                  placeholder="Enter your  Profile Title..."
+                  onChange={(e) => setExperience(e.target.value)}
+                  value={experience}
+                />
               </div>
-              <Input
-                type="number"
-                className="w-full py-6 text-white dark:bg-slate-900"
-                placeholder="Enter your  Profile Title..."
-                onChange={(e) => setExperience(e.target.value)}
-                value={experience}
-              />
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                  Location
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Add your location if you want.
-                </p>
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-secondary-foreground">
+                    Location
+                  </h2>
+                  <p className="text-sm text-secondary-foreground/70">
+                    Add your location if you want.
+                  </p>
+                </div>
+                <ShInput
+                  type="text"
+                  className="w-full py-6 text-secondary-foreground bg-input"
+                  placeholder="Enter your  Profile Title..."
+                  onChange={(e) => setLocation(e.target.value)}
+                  value={location}
+                />
               </div>
-              <Input
-                type="text"
-                className="w-full py-6 text-white dark:bg-slate-900"
-                placeholder="Enter your  Profile Title..."
-                onChange={(e) => setLocation(e.target.value)}
-                value={location}
-              />
             </div>
 
             <div className="space-y-4 ">
-              <Button disabled={loading ? true : false} type="submit">
-                Save
-              </Button>
+              <Button type="submit">Save</Button>
             </div>
           </TabsContent>
-          <TabsContent value="design">
+          <TabsContent value="design" className="space-y-6">
             <div className="font-medium"></div>
             <Accordion type="single" collapsible>
               <AccordionItem value="item-1">
@@ -408,7 +411,7 @@ export default function AppearancePage() {
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
                   <div className="space-y-4">
-                    <h2 className="text-sm font-medium text-gray-900 dark:text-gray-50">
+                    <h2 className="text-sm font-medium text-secondary-foreground">
                       Background Image
                     </h2>
                     <div className="flex items-center space-x-4">
@@ -423,19 +426,19 @@ export default function AppearancePage() {
                         />
                         <AvatarFallback>JP</AvatarFallback>
                       </Avatar>
-                      <Label
+                      <cnLabel
                         htmlFor="file"
-                        className="p-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                         variant="outline"
                       >
-                        <Input
+                        <ShInput
                           id="file"
                           className="sr-only"
                           type="file"
                           onChange={bgImage.handleImageChange}
                         />
                         Upload
-                      </Label>
+                      </cnLabel>
                       {/* <Input type="file" /> */}
                     </div>
                   </div>
@@ -588,25 +591,23 @@ export default function AppearancePage() {
               </Button>
             </div>
           </TabsContent>
-          <TabsContent value="themes">
+          <TabsContent value="themes" className="space-y-6">
             <ThemeSelector
               themes={themes}
               currentTheme={theme}
               setTheme={setTheme}
             />
             <div className="space-y-4 ">
-              <Button disabled={loading ? true : false} type="submit">
-                Save
-              </Button>
+              <Button type="submit">Save</Button>
             </div>
           </TabsContent>
-          <TabsContent value="socials">
+          <TabsContent value="socials" className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
+                <h2 className="text-lg font-medium text-secondary-foreground">
                   Add Social Links
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-secondary-foreground/70">
                   Enter your social links.
                 </p>
               </div>
@@ -619,11 +620,8 @@ export default function AppearancePage() {
                 page="appearance"
               />
             </div>
-            <div className="space-y-4 ">
-              <Button disabled={loading ? true : false} type="submit">
-                Save
-              </Button>
-            </div>
+
+            <Button type="submit">Save</Button>
           </TabsContent>
         </Tabs>
       </form>

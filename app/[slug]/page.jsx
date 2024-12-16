@@ -34,6 +34,9 @@ import WordRotate from "@/components/ui/word-rotate";
 import { TbMailFast } from "react-icons/tb";
 import { Cover } from "@/components/ui/cover";
 import SiteContext from "@/context/site";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useSocket } from "@/hooks/useSocket";
+import AuthContext from "@/context/auth";
 
 const iconMap = {
   x: RiTwitterXLine,
@@ -43,37 +46,52 @@ const iconMap = {
   tiktok: FaTiktok,
 };
 
-const SkeletonItem = ({ className }) => (
-  <div className={`bg-gray-700 animate-pulse rounded ${className}`}></div>
+const LoadingSkeleton = () => (
+  <div className="w-full min-h-screen p-5 bg-gray-900">
+    <div className="grid items-center grid-cols-1 gap-4 xl:grid-cols-2">
+      {/* Avatar Card Skeleton */}
+      <Card className="col-span-1 bg-transparent border-none shadow-none">
+        <div className="w-full max-w-[30rem] aspect-[4/5] rounded-xl bg-gray-700 animate-pulse"></div>
+        <div className="flex justify-around my-4">
+          {[1, 2, 3, 4, 5].map((_, i) => (
+            <Skeleton key={i} className="w-8 h-8 rounded-full" />
+          ))}
+        </div>
+      </Card>
+
+      {/* Content Skeleton */}
+      <div className="col-span-1 w-full max-w-[420px]">
+        <Skeleton className="h-24 mb-6" />
+        <div className="grid grid-cols-2 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((_, i) => (
+            <Skeleton key={i} className="h-12" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
-// const LoadingSkeleton = () => {
-//   <div className="w-full min-h-screen p-5 bg-gray-100">
-//     <div className="grid items-center grid-cols-1 gap-4 xl:grid-cols-2">
-//       {/* Avatar Card Skeleton */}
-//       <Card className="col-span-1 bg-transparent border-none shadow-none">
-//         <div className="w-full max-w-[30rem] aspect-[4/5] rounded-xl bg-gray-200 animate-pulse"></div>
-//         <div className="flex justify-around my-4">
-//           {[1, 2, 3, 4, 5].map((_, i) => (
-//             <SkeletonItem key={i} className="w-8 h-8 rounded-full" />
-//           ))}
-//         </div>
-//       </Card>
+const InactiveSite = () => (
+  <div className="flex items-center justify-center h-dvh bg-primary">
+    <Card className="flex flex-col items-center justify-center space-y-8 w-[500px] h-[600px] bg-secondary">
+      <CardHeader className="pb-0">
+        <Cover className="w-[490px]">
+          <TbMailFast className="text-[130px] text-primary m-auto" />
+        </Cover>
+      </CardHeader>
+      <CardTitle className="text-3xl">Not Active</CardTitle>
+      <CardDescription className="text-lg">
+        Sorry! The Site Is Not Active
+      </CardDescription>
+      {/* <CardContent>
+        <Button>Active Your Site</Button>
+      </CardContent> */}
+    </Card>
+  </div>
+);
 
-//       {/* Content Skeleton */}
-//       <div className="col-span-1 w-full max-w-[420px]">
-//         <SkeletonItem className="h-24 mb-6" />
-//         <div className="grid grid-cols-2 gap-4">
-//           {[1, 2, 3, 4, 5, 6].map((_, i) => (
-//             <SkeletonItem key={i} className="h-12" />
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   </div>;
-// };
-
-function ListItem({ link, index, site }) {
+const ListItem = ({ link, index, site }) => {
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope, { once: false, amount: 0.5 });
   const isEven = index % 2 === 0;
@@ -156,68 +174,51 @@ function ListItem({ link, index, site }) {
       )}
     </>
   );
-}
+};
+
 export default function UserSite() {
-  const { site, setSite, getSite, loading, setLoading } =
-    useContext(SiteContext);
+  const { getSite, site, setSite } = useContext(SiteContext);
+  const { userData } = useContext(AuthContext);
   const params = useParams();
+  const socket = useSocket(userData?._id);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleSiteUpdate = (data) => {
+      if (data.type === "SITE_UPDATE") {
+        setSite((prevSite) => {
+          const newSite = { ...prevSite, ...data.payload.site };
+
+          console.log("Site updated:", newSite);
+
+          return newSite;
+        });
+      }
+    };
+
+    // Add the event listener
+    socket.on("site:update", handleSiteUpdate);
+
+    // Cleanup function
+    return () => {
+      socket.off("site:update", handleSiteUpdate);
+    };
+  }, [socket]);
 
   useEffect(() => {
     getSite(params.slug);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen p-5 bg-gray-900">
-        <div className="grid items-center grid-cols-1 gap-4 xl:grid-cols-2">
-          {/* Avatar Card Skeleton */}
-          <Card className="col-span-1 bg-transparent border-none shadow-none">
-            <div className="w-full max-w-[30rem] aspect-[4/5] rounded-xl bg-gray-700 animate-pulse"></div>
-            <div className="flex justify-around my-4">
-              {[1, 2, 3, 4, 5].map((_, i) => (
-                <SkeletonItem key={i} className="w-8 h-8 rounded-full" />
-              ))}
-            </div>
-          </Card>
-
-          {/* Content Skeleton */}
-          <div className="col-span-1 w-full max-w-[420px]">
-            <SkeletonItem className="h-24 mb-6" />
-            <div className="grid grid-cols-2 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((_, i) => (
-                <SkeletonItem key={i} className="h-12" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (!site?.isActive) {
-    return (
-      <div className="flex items-center justify-center h-dvh bg-primary ">
-        <Card className="flex flex-col items-center justify-center space-y-8 w-[500px] h-[600px] bg-secondary">
-          <CardHeader className="pb-0">
-            <Cover className="w-[490px]">
-              <TbMailFast className="text-[130px] text-primary m-auto" />
-            </Cover>
-          </CardHeader>
-          <CardTitle className="text-3xl">Not Active</CardTitle>
-          <CardDescription className="text-lg">
-            Sorry ! . Your Site Is Not Active
-          </CardDescription>
-
-          <CardContent>
-            <Button>Active Your Site</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  useEffect(() => {
+    setLoading(false);
+  }, [site]);
 
   const SocialLinks = ({ className }) => (
     <div className={`hidden justify-around my-4 ${className}`}>
-      {site?.social.map((link, i) => {
+      {site?.social?.map((link, i) => {
         const Icon = iconMap[link.platform.toLowerCase()] || null;
         return (
           <Button
@@ -233,106 +234,116 @@ export default function UserSite() {
     </div>
   );
 
-  return (
-    <>
-      <div className="relative w-full h-full min-h-screen overflow-hidden ">
-        <div className=" grid gap-4  grid-cols-none xl:grid-cols-2 xs:flex xs:flex-col px-5 justify-items-center items-center z-[1] ">
-          <Card className="col-span-1 bg-transparent border-none shadow-none ">
-            <CardContainer className="inter-var xs:w-full">
-              <CardBody
-                className={` relative group/card mobile:w-[380px]  xs:w-[280px] xs:h-[370px] dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1]   w-[30rem] h-auto rounded-xl p-6  `}
-                style={{
-                  backgroundColor: site?.theme?.AvatarBgColor,
-                }}
-              >
-                <CardItem translateZ="100" className="w-full mt-4 ">
-                  <div className="relative flex items-center flex-col justify-center w-full mobile:h-[430px]  h-[545px]  xs:h-[260px]  ">
-                    <div className="aspect-[4/5] top-[80px] inset-0 w-full object-top object-cover rounded-xl group-hover/card:shadow-xl before:block before:absolute z-10 size-[110%]  before:bg-black relative inline-block">
-                      <Image
-                        src={site?.avatar?.url || user1}
-                        width={500}
-                        height={500}
-                        className="aspect-[4/5] absolute inset-0 w-full object-top object-cover rounded-xl group-hover/card:shadow-xl "
-                        alt="thumbnail"
-                        priority
-                        quality={100}
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-40 rounded-xl aspect-[4/5]   w-full object-top object-cover   group-hover/card:shadow-xl"></div>
-                    </div>
-                    <div className="relative xs:bottom-[-45px] bottom-[75px] z-10 flex flex-col items-center justify-end h-full p-6 space-y-3 text-white">
-                      <WordRotate
-                        className="flex items-center space-x-1 xs:text-base"
-                        words={[
-                          ...(site?.title ? [site.title] : []),
-                          ...(Array.isArray(site?.skills) ? site.skills : []),
-                        ].filter(Boolean)}
-                        duration={2500}
-                        charDuration={0.6}
-                        charDelayMultiple={0.03}
-                      />
-
-                      <div className="flex items-center space-x-2 xs:text-xs">
-                        <span className="text-sm xs:text-[0.75rem]">
-                          5 Years Of Experience
-                        </span>
+  const Mainsite = () => {
+    return (
+      <>
+        <div className="relative w-full h-full min-h-screen overflow-hidden ">
+          <div className=" grid gap-4  grid-cols-none xl:grid-cols-2 xs:flex xs:flex-col px-5 justify-items-center items-center z-[1] ">
+            <Card className="col-span-1 bg-transparent border-none shadow-none ">
+              <CardContainer className="inter-var xs:w-full">
+                <CardBody
+                  className={` relative group/card mobile:w-[380px]  xs:w-[280px] xs:h-[350px] dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1]   w-[30rem] h-auto rounded-xl p-6  `}
+                  style={{
+                    backgroundColor: site?.theme?.AvatarBgColor,
+                  }}
+                >
+                  <CardItem translateZ="100" className="w-full mt-4 ">
+                    <div className="relative flex items-center flex-col justify-center w-full mobile:h-[430px]  h-[545px]  xs:h-[260px]  ">
+                      <div className="aspect-[4/5] top-[80px] inset-0 w-full object-top object-cover rounded-xl group-hover/card:shadow-xl before:block before:absolute z-10 size-[110%]  before:bg-black relative inline-block">
+                        <Image
+                          src={site?.avatar?.url || user1}
+                          width={500}
+                          height={500}
+                          className="aspect-[4/5] absolute inset-0 w-full object-top object-cover rounded-xl group-hover/card:shadow-xl "
+                          alt="thumbnail"
+                          priority
+                          quality={100}
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-40 rounded-xl aspect-[4/5]   w-full object-top object-cover   group-hover/card:shadow-xl"></div>
                       </div>
-                      <div className="flex items-center space-x-1 xs:text-xs">
-                        <span className="text-sm xs:text-[0.75rem]">
-                          KSA, Jeddah
-                        </span>
+                      <div className="relative gap-[10px] xs:gap-[5px] xs:bottom-[40px] bottom-[75px] z-10 flex flex-col items-center justify-end h-full p-6 space-y-3 text-white">
+                        <WordRotate
+                          className="flex items-center xs:text-base"
+                          words={[
+                            ...(site?.title ? [site.title] : []),
+                            ...(Array.isArray(site?.skills) ? site.skills : []),
+                          ].filter(Boolean)}
+                          duration={2500}
+                          charDuration={0.6}
+                          charDelayMultiple={0.03}
+                        />
+                        {site?.experience !== 0 && (
+                          <div className="flex items-center !m-0 xs:text-xs">
+                            <span className="text-sm xs:text-[0.75rem]">
+                              {site?.experience} Years Of Experience
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center !m-0 xs:text-xs">
+                          <span className="text-sm xs:text-[0.75rem]">
+                            {site?.location}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardItem>
-              </CardBody>
-            </CardContainer>
-            <SocialLinks className={"xl:flex z-20"} />
-          </Card>
-          <SocialLinks className="mxl:flex" />
+                  </CardItem>
+                </CardBody>
+              </CardContainer>
+              <SocialLinks className={"xl:flex z-20"} />
+            </Card>
+            <SocialLinks className="mxl:flex" />
 
-          <div className="col-span-1 ">
-            <div className="max-w-[420px] text-center m-auto border-b-2 border-pink-300 pb-6 mb-6">
-              {site?.about}
+            <div className="col-span-1 ">
+              <div className="max-w-[420px] text-center m-auto border-b-2 border-pink-300 pb-6 mb-6">
+                {site?.about}
+              </div>
+              <motion.ul className="grid grid-cols-2 gap-4 p-4 xs:grid-cols-1">
+                {site?.links?.map((link, i) => (
+                  <ListItem key={link._id} link={link} index={i} site={site} />
+                ))}
+              </motion.ul>
             </div>
-            <motion.ul className="grid grid-cols-2 gap-4 p-4 xs:grid-cols-1">
-              {site?.links?.map((link, i) => (
-                <ListItem key={link._id} link={link} index={i} site={site} />
-              ))}
-            </motion.ul>
-          </div>
-        </div>{" "}
-        {site?.theme?.isParticles && (
-          <Particles
-            className="absolute inset-0 -z-10"
-            quantity={200}
-            ease={80}
-            size={0.5}
-            color={"#fff"}
-            refresh
-          />
-        )}
-        <div
-          className="absolute inset-0 opacity-50 -z-20 xs:w-full xs:h-full"
-          style={{
-            background: site?.theme?.isGradient
-              ? `linear-gradient(${site?.theme?.gradient?.dir}, ${site?.theme?.gradient?.from}, ${site?.theme?.gradient?.to})`
-              : site?.theme?.bgColor,
-          }}
-        />
-        <div className="absolute inset-0 h-full -z-30 xs:h-full ">
-          {site?.theme?.bgImage && (
-            <Image
-              src={site?.theme?.bgImage?.url || bgImage}
-              width={500}
-              height={500}
-              className="inset-0 object-cover object-center w-full h-full "
-              alt="thumbnail"
-              priority
-              quality={100}
+          </div>{" "}
+          {site?.theme?.isParticles && (
+            <Particles
+              className="absolute inset-0 -z-10"
+              quantity={200}
+              ease={80}
+              size={0.5}
+              color={"#fff"}
+              refresh
             />
           )}
+          <div
+            className="absolute inset-0 opacity-50 -z-20 xs:w-full xs:h-full"
+            style={{
+              background: site?.theme?.isGradient
+                ? `linear-gradient(${site?.theme?.gradient?.dir}, ${site?.theme?.gradient?.from}, ${site?.theme?.gradient?.to})`
+                : site?.theme?.bgColor,
+            }}
+          />
+          <div className="absolute inset-0 h-full -z-30 xs:h-full ">
+            {site?.theme?.bgImage && (
+              <Image
+                src={site?.theme?.bgImage?.url || bgImage}
+                width={500}
+                height={500}
+                className="inset-0 object-cover object-center w-full h-full "
+                alt="thumbnail"
+                priority
+                quality={100}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  };
+
+  if (loading || site === undefined) {
+    return <LoadingSkeleton />;
+  }
+
+  return site?.isActive ? <Mainsite /> : <InactiveSite />;
 }

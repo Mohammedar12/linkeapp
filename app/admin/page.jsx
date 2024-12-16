@@ -30,8 +30,8 @@ export default function DashboardPage() {
     userSite,
     newLink,
     remove,
-    iframReload,
-    setIframReload,
+
+    updateBackend,
     getSite,
   } = useContext(SiteContext);
 
@@ -43,29 +43,29 @@ export default function DashboardPage() {
 
   // const params = useParams();
 
-  const updateBackend = useCallback(async (updatedItems) => {
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/reorder`,
-        {
-          links: updatedItems.map((item, index) => ({
-            id: item._id,
-            index: index,
-          })),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      // handleRefresh();
-      console.log("Order updated in backend", response.data);
-    } catch (error) {
-      console.error("Error updating order in backend", error);
-    }
-  }, []);
+  // const updateBackend = useCallback(async (updatedItems) => {
+  //   try {
+  //     const response = await axios.put(
+  //       `${process.env.NEXT_PUBLIC_BASE_URL}/sites/reorder`,
+  //       {
+  //         links: updatedItems.map((item, index) => ({
+  //           id: item._id,
+  //           index: index,
+  //         })),
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     // handleRefresh();
+  //     console.log("Order updated in backend", response.data);
+  //   } catch (error) {
+  //     console.error("Error updating order in backend", error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -81,26 +81,34 @@ export default function DashboardPage() {
     setItems(newOrder.map((item, index) => ({ ...item, index })));
   };
 
-  const params = useParams();
-
-  const handleRefresh = () => {
-    getSite(params.slug);
-  };
-
   return (
     <>
+      {/* <div className="flex bg-white">
+        <div className="size-6 bg-background" />
+        <div className="size-6 bg-foreground" />
+        <div className="size-6 bg-input" />
+        <div className="size-6 bg-popover" />
+        <div className="size-6 bg-popover-foreground" />
+        <div className="size-6 bg-primary" />
+        <div className="size-6 bg-primary-foreground" />
+        <div className="size-6 bg-secondary" />
+        <div className="size-6 bg-secondary-foreground" />
+        <div className="size-6 bg-muted" />
+        <div className="size-6 bg-muted-foreground" />
+        <div className="size-6 bg-accent" />
+        <div className="size-6 bg-accent-foreground" />
+        <div className="size-6 bg-destructive" />
+        <div className="size-6 bg-destructive-foreground" />
+        <div className="size-6 bg-border" />
+        <div className="size-6 bg-input" />
+        <div className="size-6 bg-ring" />
+      </div> */}
       <Card className="col-span-4 border-none bg-secondary">
-        <CardHeader className="flex items-center ">
-          <CardTitle className="text-2xl font-normal">
-            Add Some Links{" "}
-          </CardTitle>
-        </CardHeader>
-
         <CardContent className="pl-2 ">
           <Card className="px-8 py-5 mx-auto my-4 bg-transparent border-none shadow-none ">
             <PlaceholdersAndVanishInput
               placeholders={placeholders}
-              className="w-auto py-6 text-xl border-b-2 rounded-none bg-primary border-primary text-secondary-foreground"
+              className="w-auto py-6 text-xl border-b-2 rounded-none bg-primary text-secondary-foreground"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onSubmit={() => {

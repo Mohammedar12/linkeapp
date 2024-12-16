@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import { Input } from "@/components/ui/Input";
+import { ShInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -37,43 +37,40 @@ export default function UserAuthForm({ className, ...props }) {
   }
 
   return (
-    <div key="1" className="flex h-screen bg-gray-900">
-      <div className="hidden w-1/2 bg-purple-600 lg:block">
+    <div key="1" className="flex h-screen ">
+      <div className="hidden w-1/2 bg-secondary lg:block">
         <Image
           alt="abstract background"
           className="object-cover w-full h-full"
           src={bg}
         />
       </div>
-      <div className="flex flex-col justify-center w-full max-w-md p-8 m-auto bg-gray-800 rounded-lg shadow-lg">
+      <div className="flex flex-col justify-center w-full max-w-md p-8 m-auto rounded-lg shadow-lg bg-secondary">
         <div className="mb-4">
-          <SparklesIcon className="w-8 h-8 text-purple-600" />
+          <SparklesIcon className="w-8 h-8 text-primary" />
           <h1 className="text-3xl font-bold text-center">Welcome back!</h1>
-          <p className="mt-2 text-sm text-center text-slate-400">
-            Enter to get unlimited access to data & information.
-          </p>
         </div>
         <form onSubmit={onSubmit} className="space-y-6">
-          <div className="space-y-1">
+          <div className="space-y-1 ">
             <label
               className="block text-sm font-medium text-slate-400"
               htmlFor="email"
             >
               Email *
             </label>
-            <Input
+            <ShInput
               id="email"
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
               role="presentation"
-              autocomplete="off"
+              autoComplete="off"
               disabled={isLoading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 ">
             <div className="flex justify-between">
               <label
                 className="block text-sm font-medium text-slate-400"
@@ -82,7 +79,7 @@ export default function UserAuthForm({ className, ...props }) {
                 Password *
               </label>
             </div>
-            <Input
+            <ShInput
               id="password"
               className="text-white"
               placeholder="Enter password"
@@ -91,13 +88,10 @@ export default function UserAuthForm({ className, ...props }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <a
-              className="block text-sm text-right text-purple-600 hover:underline"
-              href="#"
-            >
-              Forgot your password?
-            </a>
           </div>
+          <a className="block text-sm text-right " href="/forgot-password">
+            <span className="text-primary"> Forgot your password?</span>
+          </a>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Checkbox id="remember" />
@@ -111,25 +105,20 @@ export default function UserAuthForm({ className, ...props }) {
           </div>
           <Button
             disabled={isLoading}
-            className="w-full text-white bg-purple-600 hover:bg-purple-500"
+            className="w-full text-secondary bg-primary hover:bg-primary/90"
           >
             Log In
           </Button>
           <div className="flex items-center justify-between">
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
-            <a
-              className="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline"
-              href="#"
-            >
-              or, Login with
-            </a>
+            <span className="text-sm">Login with</span>
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
           </div>
 
           <Button
             type="button"
             onClick={() => loginUserGoogle()}
-            className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400"
+            className="w-full text-secondary bg-secondary-foreground hover:bg-secondary-foreground/90 "
           >
             <ChromeIcon className="w-4 h-4 mr-2 " />
             google
@@ -137,9 +126,9 @@ export default function UserAuthForm({ className, ...props }) {
         </form>
         <div className="mt-6 text-sm text-center">
           Don't have an account ?{" "}
-          <a className="text-purple-600 hover:underline" href="/signup">
+          <Link className="!text-primary hover:underline" href="/signup">
             Create one !
-          </a>
+          </Link>
         </div>
       </div>
     </div>

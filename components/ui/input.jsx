@@ -2,18 +2,17 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Input = React.forwardRef(({ className, type, ...props }, ref) => {
+const ShInput = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
-    <div className="w-full">
+    <div className="w-full m-0">
       <label htmlFor="input">
         <input
-          id="input"
           type={type}
           className={cn(
             `peer flex h-9  rounded-sm outline-none  bg-transparent border-input  px-3 py-1
          text-sm  transition-colors  
           disabled:cursor-not-allowed 
-         disabled:opacity-50 text-black    `,
+         disabled:opacity-50 text-secondary-foreground    `,
             className
           )}
           ref={ref}
@@ -23,6 +22,6 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
     </div>
   );
 });
-Input.displayName = "Input";
+ShInput.displayName = "Input";
 
-export { Input };
+export { ShInput };

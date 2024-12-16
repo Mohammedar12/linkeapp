@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
-import { Input } from "@/components/ui/Input";
+import { ShInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -19,13 +19,6 @@ export default function ResetPasswordForm({ className, ...props }) {
   const [password, setPassword] = useState();
 
   const token = useSearchParams().get("token");
-  // useEffect(() => {
-  //   first;
-
-  //   return () => {
-  //     second;
-  //   };
-  // }, [third]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -52,13 +45,13 @@ export default function ResetPasswordForm({ className, ...props }) {
             >
               Password *
             </label>
-            <Input
+            <ShInput
               id="password"
               placeholder="Enter your mail address"
               type="password"
               className="!text-white"
               role="presentation"
-              autocomplete="off"
+              autoComplete="off"
               disabled={isLoading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

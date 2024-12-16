@@ -33,7 +33,7 @@ export function Links({
   const editLink = async (id, updates) => {
     try {
       const { data } = await axios.put(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/links/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/sites/editLinks/${id}`,
         {
           ...updates,
           index,
@@ -45,8 +45,6 @@ export function Links({
           withCredentials: true,
         }
       );
-
-      console.log(data);
 
       // Update local state based on server response
       if (updates.url !== undefined) setURL(data.url);
@@ -71,7 +69,7 @@ export function Links({
 
   const updateItems = useCallback(() => {
     const updatedItems = items.map((item, idx) => ({ ...item, index: idx }));
-    console.log(updatedItems);
+
     setItems(updatedItems);
     reorder(updatedItems);
   }, [items, setItems, reorder]);
@@ -83,14 +81,14 @@ export function Links({
       dragControls={dragControls}
       onDragEnd={updateItems}
     >
-      {type === "Header" ? (
-        <Card
-          className={`  bg-card  border-none text-black p-3 m-4 ${
-            index === 0 ? "my-4 mb-14" : "my-14"
-          } flex justify-between items-center`}
-        >
-          <MdDragIndicator className="cursor-grab" onPointerDown={startDrag} />
+      <Card
+        className={`  bg-input  border-none text-secondary-foreground p-3 m-4 ${
+          index === 0 ? "my-4 mb-14" : "my-14"
+        } flex justify-between items-center`}
+      >
+        <MdDragIndicator className="cursor-grab " onPointerDown={startDrag} />
 
+        {type === "Header" ? (
           <Inputs
             name={title}
             value={title}
@@ -99,62 +97,42 @@ export function Links({
             blur={() => editLink(value?._id, { title: title })}
             type={value?.type}
           />
-          <div className="flex flex-col items-end justify-between gap-4">
-            <div className="flex gap-3">
-              <Switch
-                onCheckedChange={(newCheckedValue) => {
-                  setChecked(newCheckedValue);
-                  editLink(value?._id, { display: newCheckedValue });
-                }}
-                checked={checked}
-              />
-            </div>
-            <Button
-              onClick={() => remove(value?._id)}
-              className="text-black bg-transparent hover:bg-transparent"
-            >
-              <MdDeleteOutline />
-            </Button>
+        ) : (
+          <>
+            <Inputs
+              onChange={(e) => setTitle(e.target.value)}
+              blur={() => editLink(value?._id, { URL: URL, title: title })}
+              name={title}
+              value={title}
+              placeholder="Title"
+            />
+            <Inputs
+              onChange={(e) => setURL(e.target.value)}
+              blur={() => editLink(value?._id, { URL: URL })}
+              name={URL}
+              value={URL}
+              placeholder="URL"
+            />
+          </>
+        )}
+        <div className="flex flex-col items-end justify-between gap-4">
+          <div className="flex gap-3">
+            <Switch
+              onCheckedChange={(newCheckedValue) => {
+                setChecked(newCheckedValue);
+                editLink(value?._id, { display: newCheckedValue });
+              }}
+              checked={checked}
+            />
           </div>
-        </Card>
-      ) : (
-        <Card className="flex items-center justify-between p-3 m-4 text-black border-none bg-card ">
-          <MdDragIndicator className="cursor-grab" onPointerDown={startDrag} />
-
-          <Inputs
-            onChange={(e) => setTitle(e.target.value)}
-            blur={() => editLink(value?._id, { URL: URL, title: title })}
-            name={title}
-            value={title}
-            placeholder="Title"
-          />
-          <Inputs
-            onChange={(e) => setURL(e.target.value)}
-            blur={() => editLink(value?._id, { URL: URL })}
-            name={URL}
-            value={URL}
-            placeholder="URL"
-          />
-
-          <div className="flex flex-col items-end justify-between gap-4">
-            <div className="flex gap-3">
-              <Switch
-                onCheckedChange={(newCheckedValue) => {
-                  setChecked(newCheckedValue);
-                  editLink(value?._id, { display: newCheckedValue });
-                }}
-                checked={checked}
-              />
-            </div>
-            <Button
-              onClick={() => remove(value?._id)}
-              className="text-black bg-transparent hover:bg-transparent"
-            >
-              <MdDeleteOutline />
-            </Button>
-          </div>
-        </Card>
-      )}
+          <Button
+            onClick={() => remove(value?._id)}
+            className="bg-transparent text-secondary-foreground hover:bg-card-foreground/10 "
+          >
+            <MdDeleteOutline />
+          </Button>
+        </div>
+      </Card>
     </Reorder.Item>
   );
 }

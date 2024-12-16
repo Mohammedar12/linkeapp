@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useContext } from "react";
-import { Input } from "@/components/ui/Input";
+import { ShInput } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/auth";
@@ -11,7 +11,8 @@ import Image from "next/image";
 
 export default function UserAuthForm({ className, ...props }) {
   const [isLoading, setIsLoading] = useState(false);
-  const { registerUser } = useContext(AuthContext);
+  const { registerUser, isAuthenticated, loginUserGoogle } =
+    useContext(AuthContext);
 
   const [email, setEmail] = useState();
   const [username, setUserName] = useState();
@@ -28,17 +29,17 @@ export default function UserAuthForm({ className, ...props }) {
   }
 
   return (
-    <div key="1" className="flex h-screen bg-gray-900">
-      <div className="hidden w-1/2 bg-purple-600 lg:block">
+    <div key="1" className="flex h-screen ">
+      <div className="hidden w-1/2 bg-secondary lg:block">
         <Image
           alt="abstract background"
           className="object-cover w-full h-full"
           src={bg}
         />
       </div>
-      <div className="flex flex-col justify-center w-full max-w-md p-8 m-auto bg-gray-800 rounded-lg shadow-lg">
+      <div className="flex flex-col justify-center w-full max-w-md p-8 m-auto rounded-lg shadow-lg bg-secondary">
         <div className="mb-4">
-          <SparklesIcon className="w-8 h-8 text-purple-600" />
+          <SparklesIcon className="w-8 h-8 text-primary" />
           <h1 className="text-3xl font-bold text-center">Welcome back!</h1>
           <p className="mt-2 text-sm text-center text-slate-400">
             Enter to get unlimited access to data & information.
@@ -56,11 +57,11 @@ export default function UserAuthForm({ className, ...props }) {
             >
               Username *
             </label>
-            <Input
+            <ShInput
               id="username"
               placeholder="Enter your username"
               type="text"
-              autocomplete="false"
+              autoComplete="false"
               name="hidden"
               className="!text-white"
               disabled={isLoading}
@@ -75,12 +76,12 @@ export default function UserAuthForm({ className, ...props }) {
             >
               Email *
             </label>
-            <Input
+            <ShInput
               id="email"
               placeholder="Enter your mail address"
               type="email"
               className="!text-white"
-              autocomplete="false"
+              autoComplete="false"
               name="hidden"
               disabled={isLoading}
               value={email}
@@ -96,7 +97,7 @@ export default function UserAuthForm({ className, ...props }) {
                 Password *
               </label>
             </div>
-            <Input
+            <ShInput
               id="password"
               className="text-white"
               placeholder="Enter password"
@@ -119,33 +120,28 @@ export default function UserAuthForm({ className, ...props }) {
           </div>
           <Button
             disabled={isLoading}
-            className="w-full text-white bg-purple-600 hover:bg-purple-500"
+            className="w-full text-secondary bg-primary hover:bg-primary/90"
           >
             Sign Up
           </Button>
           <div className="flex items-center justify-between">
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
-            <Link
-              className="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline"
-              href="/login"
-            >
-              or, Sign Up with
-            </Link>
+
+            <span className="text-sm">Sign Up with</span>
             <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4" />
           </div>
-          <Button className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400">
+          <Button
+            type="button"
+            onClick={() => loginUserGoogle()}
+            className="w-full text-secondary bg-secondary-foreground hover:bg-secondary-foreground/90 "
+          >
             <ChromeIcon className="w-4 h-4 mr-2 " />
-            Google
-          </Button>
-          <Button className="w-full text-gray-900 bg-white border border-gray-300 hover:bg-slate-400 hover:text-white hover:border-slate-400">
-            <AppleIcon className="w-4 h-4 mr-2 " />
-            Apple
+            google
           </Button>
         </form>
         <div className="mt-6 text-sm text-center">
-          Have an account ?
-          <Link className="text-purple-600 hover:underline" href="/login">
-            {" "}
+          Have an account ?{" "}
+          <Link className="!text-primary hover:underline" href="/login">
             Login here
           </Link>
         </div>

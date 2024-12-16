@@ -11,6 +11,8 @@
 
 # next.js
 /.next/
+.gitignore
+.next/cache/
 /out/
 
 # production

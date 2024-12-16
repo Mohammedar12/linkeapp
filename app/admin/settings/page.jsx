@@ -3,6 +3,8 @@ import Link from "next/link";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { MainNav } from "@/components/Admin/main-nav";
 import { Button } from "@/components/ui/button";
+import Security from "./security/page";
+import { useContext } from "react";
 import {
   Card,
   CardContent,
@@ -20,26 +22,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/Input";
+import { ShInput } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 export const dynamic = "force-dynamic";
-export default function Dashboard() {
-  const [newSkill, setNewSkill] = useState("");
-  const [skills, setSkills] = useState("");
-
-  const addSkill = (e) => {
-    e.preventDefault();
-    if (newSkill && skills?.length < 3 && !skills?.includes(newSkill)) {
-      setSkills([...skills, newSkill]);
-      setNewSkill("");
-    }
-  };
-
-  const removeSkill = (skillToRemove) => {
-    setSkills(skills?.filter((skill) => skill !== skillToRemove));
-  };
+export default function Settings() {
+  // const { userData, verify } = useContext(AuthContext);
 
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -62,18 +51,21 @@ export default function Dashboard() {
             <Link href="#">Advanced</Link>
           </nav>
           <div className="grid gap-6">
-            <Card x-chunk="dashboard-04-chunk-1">
+            <Card
+              x-chunk="dashboard-04-chunk-1"
+              className="border-none bg-secondary"
+            >
               <CardHeader>
                 <CardTitle></CardTitle>
                 <CardDescription>Used to identify your page .</CardDescription>
               </CardHeader>
               <CardContent>
                 <form>
-                  <Input placeholder="username" />
+                  <ShInput placeholder="username" />
                 </form>
               </CardContent>
-              <CardFooter className="px-6 py-4 border-t">
-                <Button>Save</Button>
+              <CardFooter className="px-6 py-4 border-t border-foreground/50">
+                <Button type="button">Save</Button>
               </CardFooter>
             </Card>
           </div>
