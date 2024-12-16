@@ -214,7 +214,6 @@ export default function AppearancePage() {
     <div className="w-full max-w-3xl p-8 mx-auto space-y-8 shadow-lg bg-secondary rounded-xl sm:p-10 md:p-12 lg:p-14">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
         <h1 className="text-2xl font-bold tracking-tight text-secondary-foreground">
-        <h1 className="text-2xl font-bold tracking-tight text-secondary-foreground">
           Appearance
         </h1>
       </div>
@@ -231,10 +230,9 @@ export default function AppearancePage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h2 className="text-lg font-medium text-secondary-foreground">
-                  <h2 className="text-lg font-medium text-secondary-foreground">
                     Profile Picture
                   </h2>
-                  <p className="text-sm text-secondary-foreground">
+
                   <p className="text-sm text-secondary-foreground">
                     Update your profile picture.
                   </p>
@@ -247,18 +245,16 @@ export default function AppearancePage() {
                         avatar.preview ? avatar.preview : avatar.image || user1
                       }
                     />
-                    <AvatarFallback className="bg-input">JP</AvatarFallback>
+
                     <AvatarFallback className="bg-input">JP</AvatarFallback>
                   </Avatar>
-                  <cnLabel
+
                   <cnLabel
                     htmlFor="file"
                     className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
-                    className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                     variant="outline"
                   >
-                    <CnInput
-                    <CnInput
+                    <ShInput
                       id="file"
                       className="sr-only"
                       type="file"
@@ -266,7 +262,7 @@ export default function AppearancePage() {
                     />
                     Upload Your Photo
                   </cnLabel>
-                  </cnLabel>
+
                   {/* <Input type="file" /> */}
                 </div>
               </div>
@@ -309,17 +305,15 @@ export default function AppearancePage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-medium text-secondary-foreground">
-                <h2 className="text-lg font-medium text-secondary-foreground">
                   Description
                 </h2>
-                <p className="text-sm text-secondary-foreground/70">
+
                 <p className="text-sm text-secondary-foreground/70">
                   Update your profile description.
                 </p>
               </div>
 
               <Textarea
-                className="min-h-[120px] bg-input text-secondary-foreground"
                 className="min-h-[120px] bg-input text-secondary-foreground"
                 placeholder={
                   loading ? "loading8..." : "Enter your description..."
@@ -333,17 +327,14 @@ export default function AppearancePage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-medium text-secondary-foreground">
-                <h2 className="text-lg font-medium text-secondary-foreground">
                   Add Your Skills
                 </h2>
-                <p className="text-sm text-secondary-foreground/70">
                 <p className="text-sm text-secondary-foreground/70">
                   Enter 1-3 Skills.
                 </p>
               </div>
 
               <div className="flex items-center w-full gap-4">
-                <div className="flex items-center flex-1 gap-4 bg-input">
                 <div className="flex items-center flex-1 gap-4 bg-input">
                   {skills?.length !== 3 && (
                     <>
@@ -416,10 +407,9 @@ export default function AppearancePage() {
 
             <div className="space-y-4 ">
               <Button type="submit">Save</Button>
-              <Button type="submit">Save</Button>
             </div>
           </TabsContent>
-          <TabsContent value="design" className="space-y-6">
+
           <TabsContent value="design" className="space-y-6">
             <div className="font-medium"></div>
             <Accordion type="single" collapsible>
@@ -429,7 +419,6 @@ export default function AppearancePage() {
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
                   <div className="space-y-4">
-                    <h2 className="text-sm font-medium text-secondary-foreground">
                     <h2 className="text-sm font-medium text-secondary-foreground">
                       Background Image
                     </h2>
@@ -445,10 +434,9 @@ export default function AppearancePage() {
                         />
                         <AvatarFallback>JP</AvatarFallback>
                       </Avatar>
-                      <cnLabel
+
                       <cnLabel
                         htmlFor="file"
-                        className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                         className="p-4 rounded-md text-primary-foreground bg-primary/80 hover:bg-primary"
                         variant="outline"
                       >
@@ -459,7 +447,6 @@ export default function AppearancePage() {
                           onChange={bgImage.handleImageChange}
                         />
                         Upload
-                      </cnLabel>
                       </cnLabel>
                       {/* <Input type="file" /> */}
                     </div>
@@ -613,7 +600,7 @@ export default function AppearancePage() {
               </Button>
             </div>
           </TabsContent>
-          <TabsContent value="themes" className="space-y-6">
+
           <TabsContent value="themes" className="space-y-6">
             <ThemeSelector
               themes={themes}
@@ -622,18 +609,15 @@ export default function AppearancePage() {
             />
             <div className="space-y-4 ">
               <Button type="submit">Save</Button>
-              <Button type="submit">Save</Button>
             </div>
           </TabsContent>
-          <TabsContent value="socials" className="space-y-6">
+
           <TabsContent value="socials" className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-medium text-secondary-foreground">
-                <h2 className="text-lg font-medium text-secondary-foreground">
                   Add Social Links
                 </h2>
-                <p className="text-sm text-secondary-foreground/70">
                 <p className="text-sm text-secondary-foreground/70">
                   Enter your social links.
                 </p>
@@ -647,8 +631,6 @@ export default function AppearancePage() {
                 page="appearance"
               />
             </div>
-
-            <Button type="submit">Save</Button>
 
             <Button type="submit">Save</Button>
           </TabsContent>
