@@ -10,6 +10,7 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Button as MuiBtn } from "@mui/material";
+import { IconAlertTriangleFilled } from "@tabler/icons-react";
 import SiteContext from "@/context/site";
 import {
   Drawer,
@@ -24,10 +25,10 @@ import {
 import { LuCopy, LuCopyCheck } from "react-icons/lu";
 
 export default function UserLayout({ children }) {
-  const { userData, verify } = useContext(AuthContext);
+  const { userData, sendVerifyToken, tokenSend } = useContext(AuthContext);
+  const [verify, setVerify] = useState(userData?.isVerified);
   const { site } = useContext(SiteContext);
-  const { sendVerifyToken, tokenSend, loading, iFrameReload, setIframReload } =
-    useContext(SiteContext);
+  const { loading, iFrameReload, setIframReload } = useContext(SiteContext);
 
   const [alert, setAlert] = useState(false);
   const pathname = usePathname();
@@ -48,14 +49,6 @@ export default function UserLayout({ children }) {
   };
 
   const iframeRef = useRef(null);
-
-  useEffect(() => {
-    if (verify) {
-      setAlert(true);
-    } else {
-      setAlert(false);
-    }
-  }, []);
 
   const isSettingsPage =
     pathname === "/admin/settings" || pathname === "/admin/overview";
@@ -89,6 +82,23 @@ export default function UserLayout({ children }) {
       />
     );
   };
+  const VerifyAlert = () => {
+    return (
+      <Alert className="flex justify-between space-x-2 border-none bg-secondary">
+        <div className="flex space-x-2">
+          <IconAlertTriangleFilled className="mb-5 " />
+          <div className="space-y-2">
+            <AlertTitle>Your Accout Not Verified Yet</AlertTitle>
+            <AlertDescription>
+              your site is inacitve until your accout verified, check your email
+              to verify
+            </AlertDescription>
+          </div>
+        </div>
+        <Button onClick={sendVerifyToken}>Send email</Button>
+      </Alert>
+    );
+  };
 
   return (
     <>
@@ -100,6 +110,7 @@ export default function UserLayout({ children }) {
         {/* Main content area */}
         <div className="flex-1 overflow-y-auto xl:mt-32 ">
           <div className="max-w-3xl py-8 mx-4 mt-4 md:mx-auto  md:w-[clamp(400px,80%,740px)]  ">
+            {!userData?.isVerified && <VerifyAlert />}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h1 className="flex-1 text-xl font-semibold">
                 Manage Your Links

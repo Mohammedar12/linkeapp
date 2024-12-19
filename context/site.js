@@ -25,7 +25,6 @@ export const SiteProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [userSite, setUserSite] = useState();
   const [loading, setLoading] = useState(false);
-  const [tokenSend, setTokenSent] = useState(null);
   const [iframReload, setIframReload] = useState(0);
   const [error, setError] = useState(null);
   const { userData } = useContext(AuthContext);
@@ -35,11 +34,7 @@ export const SiteProvider = ({ children }) => {
   const params = useParams();
 
   useEffect(() => {
-    if (getDecodedCookie("authenticated")) {
-      fetchData();
-    } else if (getDecodedCookie("authenticated") === undefined) {
-      return null;
-    }
+    fetchData();
   }, []);
 
   const fetchData = async () => {
@@ -162,29 +157,6 @@ export const SiteProvider = ({ children }) => {
 
       setLoading(false);
       setError(error);
-    }
-  };
-
-  const sendVerifyToken = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.put(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/send-verifyToken`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      setLoading(false);
-      setTokenSent(data?.message);
-    } catch (error) {
-      setLoading(false);
-      toast.error(error?.response?.data?.message);
-      console.log(error);
-      setTokenSent(error?.response?.data?.message);
     }
   };
 
@@ -366,10 +338,7 @@ export const SiteProvider = ({ children }) => {
         setUserSite,
         userSite,
         updateUser,
-        sendVerifyToken,
-        tokenSend,
-        setTokenSent,
-        loading,
+
         setLoading,
         getSite,
         site,
